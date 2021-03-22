@@ -10,16 +10,18 @@
 #include <Scenery/Euler.hpp>
 #include <Scenery/Object.hpp>
 #include <memory>
+#include <Objects/Tree.hpp>
 
 using namespace Matrix;
 using namespace Scenery;
-using namespace std;
 
 static float angle = 0;
 static Light l;
 
-static unique_ptr<Object> p1(new Object());
+static std::unique_ptr<Object> p1(new Object());
 static Object* o2 = new Object(), o3;
+
+static Objects::Tree t;
 
 void update(float dt) {
 	if (Window::getKey(0x1B)) {
@@ -33,7 +35,7 @@ void update(float dt) {
 
 	p1.get()->rotation.order = Order::YXZ;
 	p1.get()->rotation.y(angle);
-	//p1.get()->build();
+	p1.get()->build();
 
 	l.position(cos(angle * M_2_PI / 180) * 4, 1.0f, sin(angle * M_2_PI / 180) * 4);
 
@@ -48,29 +50,22 @@ void draw() {
 	l.use();
 
 	gluLookAt(.0f, .0f, 5.0f, .0f, .0f, .0f, .0f, 1.0f, .0f);
-	glPushAttrib(GL_LIGHTING_BIT);
-	Material m;
-	m.diffuse(1.0f, .0f, .0f, 1.0f).specular(1.0f, 1.0f, 1.0f, 1.0f);
-	m.shininess(64);
-	m.front();
 
-	//
-	m.use();
-
-	Euler e;
+	/*Euler e;
 	e.z(angle * M_PI / 180);
 	auto rm = e.getMatrix();
 
 
-	glMultMatrixf((const float*)rm.data);
+	glMultMatrixf((const float*)rm.data);*/
 	//auto mat = Mat<4>::rotZ(angle * M_PI / 180);
 
 	//glMultMatrixf((const float*)mat.data);
 
 
-	p1.get()->render();
+	//p1.get()->render();
 
-	glPopAttrib();
+	t.translation[1] = -1;
+	t.render();
 
 
 	glPopMatrix();
@@ -78,7 +73,7 @@ void draw() {
 	glutSwapBuffers();
 	int err = glGetError();
 	if (err != GL_NO_ERROR)
-		std::cout << "Shit happened " << err << std::endl;
+		std::cout << "An error occured " << err << std::endl;
 
 }
 

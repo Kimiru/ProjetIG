@@ -9,7 +9,7 @@ namespace Scenery {
 	public:
 		bool doAmbiant = false, doDiffuse = false, doSpecular = false, doEmission = false, doShininess = false;
 		float ambiant_values[4] = { 0,0,0,0 }, diffuse_values[4] = { 0,0,0,0 }, specular_values[4] = { 0,0,0,0 }, emission_values[4] = { 0,0,0,0 }, shininess_value = 0;
-		int side;
+		int side = GL_FRONT;
 
 		Material& ambiant(float r, float g, float b, float a);
 		Material& diffuse(float r, float g, float b, float a);

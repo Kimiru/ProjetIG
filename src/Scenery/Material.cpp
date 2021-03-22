@@ -84,4 +84,8 @@ void Scenery::Material::use()
 		glMaterialfv(side, GL_EMISSION, emission_values);
 	if (doShininess)
 		glMaterialf(side, GL_SHININESS, shininess_value);
+
+	int err = glGetError();
+	if (err != GL_NO_ERROR)
+		std::cout << "Error using material " << err << std::endl;
 }

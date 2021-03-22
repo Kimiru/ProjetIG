@@ -77,10 +77,19 @@ void Scenery::Object::render()
 		glScalef(scale.data[0], scale.data[1], scale.data[2]);
 	}
 
+	if (material != NULL) {
+		glPushAttrib(GL_LIGHTING_BIT);
+		material->use();
+	}
+
 	draw();
 
 	for (Object* child : children)
 		child->render();
+
+	if (material != NULL) {
+		glPopAttrib();
+	}
 
 	glPopMatrix();
 

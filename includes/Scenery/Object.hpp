@@ -7,6 +7,7 @@
 using namespace Matrix;
 
 #include <Scenery/Euler.hpp>
+#include <Scenery/Material.hpp>
 
 #include <GL/glut.h>
 #include <GL/gl.h>
@@ -23,6 +24,7 @@ namespace Scenery {
 		Vec<3> translation;
 		Euler rotation;
 		Vec<3> scale;
+		Material* material = NULL;
 
 		Mat<4> transformationMatrix;
 		bool built = false;
@@ -37,7 +39,7 @@ namespace Scenery {
 		Vec<4> applyTransformation(Vec<4> v);
 
 		void render();
-		void draw();
+		virtual void draw();
 
 	};
 
