@@ -147,7 +147,7 @@ int Scenery::Euler::step(int step)
 	else if (order == Order::XZY)
 		return (2 - step + 1) % 3;
 	else if (order == Order::YXZ)
-		return (2 - step - 2) % 3;
+		return (2 - step - 1) % 3;
 	else if (order == Order::YZX)
 		return (step - 1) % 3;
 	else if (order == Order::ZXY)
