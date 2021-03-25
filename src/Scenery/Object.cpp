@@ -95,7 +95,12 @@ void Scenery::Object::render()
 
 }
 
-void Scenery::Object::draw()
+void Scenery::Object::draw() {}
+
+void Scenery::Object::update(float dt)
 {
-	glutSolidCube(1);
+
+	for (Object* child : children)
+		child->update(dt);
+
 }

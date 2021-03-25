@@ -49,7 +49,14 @@ void draw() {
 
 	l.use();
 
-	gluLookAt(.0f, .0f, 5.0f, .0f, .0f, .0f, .0f, 1.0f, .0f);
+	float rada = angle * M_PI / 180;
+	float x = cos(rada) * 5.0;
+	float z = sin(rada) * 5.0;
+
+	x = 0.0;
+	z = 5.0;
+
+	gluLookAt(x, 3.0f, z, .0f, 0.0f, .0f, .0f, 1.0f, .0f);
 
 	/*Euler e;
 	e.z(angle * M_PI / 180);
@@ -64,7 +71,7 @@ void draw() {
 
 	//p1.get()->render();
 
-	t.translation[1] = -1;
+	//t.translation[1] = -1;
 	t.render();
 
 

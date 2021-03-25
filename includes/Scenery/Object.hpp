@@ -35,11 +35,12 @@ namespace Scenery {
 		void remove(int index);
 		void remove(std::string name);
 
-		void build();
+		virtual void build();
 		Vec<4> applyTransformation(Vec<4> v);
 
 		void render();
 		virtual void draw();
+		virtual void update(float dt);
 
 	};
 
