@@ -8,6 +8,7 @@ using namespace Matrix;
 
 #include <Scenery/Euler.hpp>
 #include <Scenery/Material.hpp>
+#include <Scenery/BuildOrder.hpp>
 
 #include <GL/glut.h>
 #include <GL/gl.h>
@@ -28,6 +29,7 @@ namespace Scenery {
 
 		Mat<4> transformationMatrix;
 		bool built = false;
+		BuildOrder buildOrder = BuildOrder::GL;
 
 		Object();
 
@@ -41,7 +43,7 @@ namespace Scenery {
 		void render();
 		virtual void draw();
 		virtual void update(float dt);
-
+		void setBuildOrder(BuildOrder order) { buildOrder = order; rotation.buildOrder = order; }
 	};
 
 }

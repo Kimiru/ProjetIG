@@ -4,6 +4,8 @@
 
 #include <GL/gl.h>
 
+#include <Scenery/BuildOrder.hpp>
+
 #include <ostream>
 
 using namespace Matrix;
@@ -23,6 +25,7 @@ namespace Scenery {
 		bool built = false;
 		Mat<4> rotationMatrix;
 
+		BuildOrder buildOrder = BuildOrder::GL;
 
 		Euler();
 		Euler(float x, float y, float z, Order o);

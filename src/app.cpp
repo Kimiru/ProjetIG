@@ -9,8 +9,10 @@
 #include <Scenery/Light.hpp>
 #include <Scenery/Euler.hpp>
 #include <Scenery/Object.hpp>
+#include <Scenery/SkinnedMesh.hpp>
 #include <memory>
 #include <Objects/Tree.hpp>
+#include <Scenery/Animator.hpp>s
 
 using namespace Matrix;
 using namespace Scenery;
@@ -18,24 +20,31 @@ using namespace Scenery;
 static float angle = 0;
 static Light l;
 
-static std::unique_ptr<Object> p1(new Object());
-static Object* o2 = new Object(), o3;
-
 static Objects::Tree t;
+
+static Material smat;
+static SkinnedMesh sm;
+
+Animator a;
 
 void update(float dt) {
 	if (Window::getKey(0x1B)) {
-		delete o2;
 		exit(0);
 	}
 
 	if (Window::getKey('a')) {
-		angle += dt * 360;
+		angle += dt * 90;
 	}
 
-	p1.get()->rotation.order = Order::YXZ;
-	p1.get()->rotation.y(angle);
-	p1.get()->build();
+	a.update(dt);
+	sm[1].rotation.z(a.value);
+
+	//sm[0].rotation.y(angle * M_PI / 180);
+	//sm[1].rotation.z(cos(angle * M_PI / 180) / 3);
+	//sm[2].rotation.y(M_PI_2);
+	//sm[2].rotation.z(-cos(angle * M_PI / 180) / 3);
+	sm.build();
+
 
 	l.position(cos(angle * M_2_PI / 180) * 4, 1.0f, sin(angle * M_2_PI / 180) * 4);
 
@@ -53,10 +62,10 @@ void draw() {
 	float x = cos(rada) * 5.0;
 	float z = sin(rada) * 5.0;
 
-	x = 0.0;
-	z = 5.0;
+	x = 0;//cos(angle * M_PI / 180) * 3;
+	z = 3;//sin(angle * M_PI / 180) * 3;
 
-	gluLookAt(x, 3.0f, z, .0f, 0.0f, .0f, .0f, 1.0f, .0f);
+	gluLookAt(x, 2.0f, z, .0f, 1.0f, .0f, .0f, 1.0f, .0f);
 
 	/*Euler e;
 	e.z(angle * M_PI / 180);
@@ -72,7 +81,9 @@ void draw() {
 	//p1.get()->render();
 
 	//t.translation[1] = -1;
-	t.render();
+	//t.render();
+
+	sm.render();
 
 
 	glPopMatrix();
@@ -86,12 +97,75 @@ void draw() {
 
 int main(int argc, char** argv) {
 
-	o2->translation[1] = 1.5;
-	//o2->build();
-	o3.translation[0] = 1.5;
-	//o3.build();
-	o2->add(&o3);
-	p1.get()->add(o2);
+
+	Vertex sauce[] = {
+		Vertex(-.5, 0, .5),
+		Vertex(.5, 0, .5),
+		Vertex(.5, 0, -.5),
+		Vertex(-.5, 0, -.5),
+		Vertex(-.5, 1, .5),
+		Vertex(.5, 1, .5),
+		Vertex(.5, 1, -.5),
+		Vertex(-.5, 1, -.5),
+		Vertex(-.5, 2, .5),
+		Vertex(.5, 2, .5),
+		Vertex(.5, 2, -.5),
+		Vertex(-.5, 2, -.5)
+	};
+
+	int weight[] = { 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2 };
+
+	int tmap[] = {
+		2, 1, 0,
+		3, 2, 0,
+
+		0, 1, 5,
+		0, 5, 4,
+		1, 2, 6,
+		1, 6, 5,
+		2, 3, 7,
+		2, 7, 6,
+		3, 0, 4,
+		3, 4, 7,
+
+		4, 5, 9,
+		4, 9, 8,
+		5, 6, 10,
+		5, 10, 9,
+		6, 7, 11,
+		6, 11, 10,
+		7, 4, 8,
+		7, 8, 11,
+
+		8, 9, 10,
+		8, 10, 11
+	};
+
+	sm.material = &smat;
+
+	sm.init(12, sauce, weight, 20, tmap, 3);
+	sm[0].add(&sm[1]);
+	sm[1].add(&sm[2]);
+
+	sm[1].translation[1] = 1;
+	sm[2].translation[1] = 1;
+
+	sm.compileSkeleton();
+	//sm[1].translation[1] = 2;
+	//sm[1].rotation.z(M_PI_4);
+	//sm[2].translation[0] = .5;
+	//sm[1].rotation.order = Order::YXZ;
+
+	sm.build();
+	//sm.displayBones = true;
+
+	a.ref = &sm[1].rotation.data[2];
+	a.addKey(0, 0, bezier(-M_PI_4, M_PI_4));
+	a.loop = true;
+	a.pingpong = true;
+	a.end = 2;
+
+	smat.diffuse(.5, .0, .0, 1.0).ambiant(.5, .0, .0, 1.0);
 
 	l.diffuse(1.0f, 1.0f, 1.0f, 1.0f).position(1.0f, 4.0f, 1.0f);
 	l.specular(1.0f, 1.0f, 1.0f, 1.0f);

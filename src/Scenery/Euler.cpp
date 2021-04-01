@@ -80,10 +80,19 @@ void Scenery::Euler::build()
 {
 	rotationMatrix = Mat<4>::id();
 
-	for (int i = 0; i < 3; i++) {
-		int cstep = step(i);
-		if (data[cstep] != 0)
-			rotationMatrix = rotationMatrix * getMatrixStep(i);
+	if (buildOrder == BuildOrder::GL) {
+		for (int i = 0; i < 3; i++) {
+			int cstep = step(i);
+			if (data[cstep] != 0)
+				rotationMatrix = rotationMatrix * getMatrixStep(i);
+		}
+	}
+	else {
+		for (int i = 2; i >= 0; i--) {
+			int cstep = step(i);
+			if (data[cstep] != 0)
+				rotationMatrix = rotationMatrix * getMatrixStep(i);
+		}
 	}
 
 	built = true;
@@ -137,7 +146,7 @@ void Scenery::Euler::applyGLRotate()
 
 bool Scenery::Euler::isRotation()
 {
-	return data[0] != 0 && data[1] != 0 && data[2] != 0;
+	return data[0] != 0 || data[1] != 0 || data[2] != 0;
 }
 
 int Scenery::Euler::step(int step)
@@ -145,11 +154,11 @@ int Scenery::Euler::step(int step)
 	if (order == Order::XYZ)
 		return step;
 	else if (order == Order::XZY)
-		return (2 - step + 1) % 3;
+		return (3 - step) % 3;
 	else if (order == Order::YXZ)
-		return (2 - step - 1) % 3;
+		return (4 - step) % 3;
 	else if (order == Order::YZX)
-		return (step - 1) % 3;
+		return (2 + step) % 3;
 	else if (order == Order::ZXY)
 		return (step + 1) % 3;
 	else

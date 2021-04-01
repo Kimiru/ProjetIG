@@ -31,29 +31,35 @@ namespace Matrix {
 					for (int column = 0; column < M; column++)
 						res.data[line][column] = data[line][column];
 			}
-			else {
-				for (int line = 0; line < M; line++)
-					for (int column = 0; column < M; column++) {
-						if (line < N && column < N)
-							res.data[line][column] = data[line][column];
-						else
-							res.data[line][column] = 0;
-					}
-			}
 			return res;
 		}
 
 		float* operator[](int index) {
 			return data[index];
 		}
+		Mat<N> operator!() {
+			float _det = det();
+			if (_det == 0)
+				return Mat<N>::id();
+			_det = 1 / _det;
+			return commatrix().transpose() * _det;
+		}
+
 		Mat<N> operator*(Mat<N> m) {
 			Mat<N> res;
-			for (int line = 0; line < N; line++)
-				for (int column = 0; column < N; column++) {
-					res[line][column] = 0;
+			for (int column = 0; column < N; column++)
+				for (int line = 0; line < N; line++) {
+					res.data[column][line] = 0;
 					for (int depth = 0; depth < N; depth++)
-						res[line][column] += data[line][depth] * m[depth][column];
+						res.data[column][line] += data[column][depth] * m.data[depth][line];
 				}
+			return res;
+		}
+		Mat<N> operator*(float n) {
+			Mat<N> res;
+			for (int column = 0; column < N; column++)
+				for (int line = 0; line < N; line++)
+					res.data[column][line] = data[column][line] * n;
 			return res;
 		}
 		Vec<N> operator*(Vec<N> v) {
@@ -61,12 +67,14 @@ namespace Matrix {
 			for (int line = 0; line < N; line++) {
 				res[line] = 0;
 				for (int depth = 0; depth < N; depth++) {
-					res[line] = data[line][depth] * v[depth];
+					res.data[line] += data[depth][line] * v.data[depth];
 				}
 
 			}
 			return res;
 		};
+
+
 
 		/**
 			Return the identity matrix
@@ -147,18 +155,87 @@ namespace Matrix {
 		 */
 		static Mat<N> translate(float values[N - 1]) {
 			Mat<N> res = Mat<4>::id();
-			for (int line = 0; line < N - 1; line++) {
+			for (int line = 0; line < N - 1; line++)
 				res.data[N - 1][line] = values[line];
-			}
+
+			return res;
+		}
+
+		static Mat<4> translate(float x, float y, float z) {
+			Mat<N> res = Mat<4>::id();
+			res.data[3][0] = x;
+			res.data[3][1] = y;
+			res.data[3][2] = z;
 			return res;
 		}
 
 		static Mat<N> scale(float values[N - 1]) {
 			Mat<N> res = Mat<N>::id();
 			for (int i = 0; i < N - 1; i++)
-				res[i][i] = values[i];
+				res.data[i][i] = values[i];
 			return res;
 		}
+
+		Mat<N> transpose() {
+			Mat<N> res = Mat<N>::id();
+
+			for (int column = 0; column < N; column++)
+				for (int line = 0; line < N; line++)
+					res.data[column][line] = data[line][column];
+
+			return res;
+		}
+
+		Mat<N> commatrix() {
+			Mat<N> res = Mat<N>::id();
+			if  constexpr (N > 1) {
+				Mat<N - 1> mat;
+
+				for (int column = 0; column < N; column++) {
+					for (int line = 0; line < N; line++) {
+						for (int col = 0; col < N; col++) {
+							if (col == column) continue;
+							int fixc = col > column ? -1 : 0;
+							for (int li = 0; li < N; li++) {
+								if (li == line) continue;
+								int fixl = li > line ? -1 : 0;
+								mat.data[col + fixc][li + fixl] = data[col][li];
+							}
+						}
+						res.data[column][line] = mat.det() * ((column + line) % 2 == 0 ? 1 : -1);
+					}
+				}
+			}
+			return res;
+		}
+
+		float det() {
+			if constexpr (N == 1)
+				return data[0][0];
+			else if constexpr (N == 2) {
+				return (data[0][0] * data[1][1]) - (data[0][1] * data[1][0]);
+			}
+			else if  constexpr (N > 2) {
+				int constexpr LINE = N - 1;
+				float det = 0;
+
+				Mat<LINE> mat;
+
+				for (int column = 0; column < N; column++) {
+					for (int col = 0; col < N; col++) {
+						if (col == column) continue;
+						int fix = col > column ? -1 : 0;
+						for (int line = 0; line < LINE; line++) {
+							mat.data[col + fix][line] = data[col][line];
+						}
+					}
+					det += data[column][LINE] * mat.det() * (column % 2 == 0 ? 1 : -1);
+				}
+				return det * (N % 2 == 0 ? -1 : 1);
+			}
+			return 0;
+		}
+
 	};
 
 }
@@ -166,10 +243,10 @@ namespace Matrix {
 template<int N>
 std::ostream& operator<<(std::ostream& os, const Matrix::Mat<N>& m) {
 	os << "Matrix<" << N << ">" << std::endl;
-	for (int line = 0; line < N; line++) {
+	for (int column = 0; column < N; column++) {
 		os << "[";
-		for (int column = 0; column < N; column++) {
-			if (column != 0)
+		for (int line = 0; line < N; line++) {
+			if (line != 0)
 				os << ", ";
 			os << m.data[line][column];
 		}
@@ -177,3 +254,4 @@ std::ostream& operator<<(std::ostream& os, const Matrix::Mat<N>& m) {
 	}
 	return os;
 }
+

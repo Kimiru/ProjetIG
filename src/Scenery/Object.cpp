@@ -30,18 +30,37 @@ void Scenery::Object::remove(std::string name)
 void Scenery::Object::build()
 {
 	transformationMatrix = Mat<4>::id();
-	if (!translation.all(0)) {
-		Mat<4> translationMatrix = Mat<4>::translate(translation.data);
-		transformationMatrix = transformationMatrix * translationMatrix;
+
+	if (buildOrder == BuildOrder::GL) {
+		if (!translation.all(0)) {
+			Mat<4> translationMatrix = Mat<4>::translate(translation.data);
+			transformationMatrix = transformationMatrix * translationMatrix;
+		}
+		if (rotation.isRotation()) {
+			Mat<4> rotationMatrix = rotation.getMatrix();
+			transformationMatrix = transformationMatrix * rotationMatrix;
+		}
+		if (!translation.all(1)) {
+			Mat<4> scaleMatrix = Mat<4>::scale(scale.data);
+			transformationMatrix = transformationMatrix * scaleMatrix;
+		}
 	}
-	if (rotation.isRotation()) {
-		Mat<4> rotationMatrix = rotation.getMatrix();
-		transformationMatrix = transformationMatrix * rotationMatrix;
+	else {
+		if (!translation.all(1)) {
+			Mat<4> scaleMatrix = Mat<4>::scale(scale.data);
+			transformationMatrix = transformationMatrix * scaleMatrix;
+		}
+		if (rotation.isRotation()) {
+			Mat<4> rotationMatrix = rotation.getMatrix();
+			transformationMatrix = transformationMatrix * rotationMatrix;
+		}
+		if (!translation.all(0)) {
+			Mat<4> translationMatrix = Mat<4>::translate(translation.data);
+			transformationMatrix = transformationMatrix * translationMatrix;
+		}
 	}
-	if (!translation.all(1)) {
-		Mat<4> scaleMatrix = Mat<4>::scale(scale.data);
-		transformationMatrix = transformationMatrix * scaleMatrix;
-	}
+
+
 	built = true;
 }
 
@@ -64,6 +83,8 @@ Vec<4> Scenery::Object::applyTransformation(Vec<4> v) {
 
 	return v;
 }
+
+
 
 void Scenery::Object::render()
 {

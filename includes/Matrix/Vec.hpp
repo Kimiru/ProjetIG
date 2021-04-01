@@ -36,15 +36,6 @@ namespace Matrix {
 			}
 		}
 
-		Vec(int nbr, ...) {
-			va_list args;
-			va_start(args, nbr);
-			for (int i = 0; i < N; i++) {
-				data[i] = va_arg(args, float);
-			}
-			va_end(args);
-		}
-
 		/// <summary>
 		/// Convert a Vector.
 		/// 

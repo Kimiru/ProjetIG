@@ -1,4 +1,5 @@
 #pragma once
+
 #include <GL/gl.h>
 #include <Matrix/Vec.hpp>
 using namespace Matrix;
@@ -17,6 +18,7 @@ namespace Scenery {
 		Vec<3> operator>>(Vertex v); // Compute vector going from this vertex to v vertex
 
 		Vertex();
+		Vertex(float x, float y, float z);
 
 		void setTexPos(float x, float y);
 		void use(); // Uses gl functions to define Vertex /!\ Must be used between glStart(...) and glEnd()
@@ -26,3 +28,4 @@ namespace Scenery {
 	};
 
 }
+

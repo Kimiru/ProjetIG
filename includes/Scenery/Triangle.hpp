@@ -12,10 +12,15 @@ namespace Scenery {
 
 	public:
 
-		Vertex& _1, _2, _3;
+		Vertex* _1, * _2, * _3;
 
-		Triangle(Vertex& _1, Vertex& _2, Vertex& _3);
+		Triangle();
+		Triangle(Vertex* _1, Vertex* _2, Vertex* _3);
 
+		void renormalize();
+
+		static void start();
+		static void end();
 		void draw();
 
 	};
