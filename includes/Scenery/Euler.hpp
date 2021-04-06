@@ -4,8 +4,6 @@
 
 #include <GL/gl.h>
 
-#include <Scenery/BuildOrder.hpp>
-
 #include <ostream>
 
 using namespace Matrix;
@@ -20,12 +18,11 @@ namespace Scenery {
 	public:
 
 		float data[3];
+		float base[3] = { 0, 0, 0 };
 		Order order;
 
 		bool built = false;
 		Mat<4> rotationMatrix;
-
-		BuildOrder buildOrder = BuildOrder::GL;
 
 		Euler();
 		Euler(float x, float y, float z, Order o);
@@ -39,6 +36,9 @@ namespace Scenery {
 		float& z();
 		float& z(float n);
 		float& rz(float n);
+
+		void setBase(std::initializer_list<float> list);
+		void reset();
 
 		void build();
 		Mat<4> getMatrixStep(int wantedStep);

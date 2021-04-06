@@ -3,6 +3,7 @@
 #include <vector>
 
 #include <GL/gl.h>
+#include <iostream>
 
 namespace Scenery {
 
@@ -39,7 +40,9 @@ namespace Scenery {
 		void turnOn();
 		void turnOff();
 		void use();
+		bool isOn() { return enabled; }
 
 	};
 
 }
+

@@ -1,5 +1,30 @@
 #include <Scenery/Animator.hpp>
 
+void Scenery::Animator::setTime(float newTime)
+{
+	time = newTime;
+
+	int key = getCurrentTimeKey();
+	float time = getCurrentTime();
+	float left = timekey[key];
+	float right = getNextTime(key);
+	std::function<float(float, float, float)> func;
+
+	if (funcs.find(key) == funcs.end()) {
+		if (methode == UpdateMethode::VALUE)
+			value = 0;
+		else
+			*ref = 0;
+	}
+	else {
+		func = funcs[key];
+		if (methode == UpdateMethode::VALUE)
+			value = func(time, left, right);
+		else
+			*ref = func(time, left, right);
+	}
+}
+
 void Scenery::Animator::addKey(int index, float time, std::function<float(float, float, float)> func)
 {
 	timekey[index] = time;
@@ -20,7 +45,7 @@ void Scenery::Animator::update(float dt)
 		time = trueEnd;
 	}
 
-	float key = getCurrentTimeKey();
+	int key = getCurrentTimeKey();
 	float time = getCurrentTime();
 	float left = timekey[key];
 	float right = getNextTime(key);
@@ -42,6 +67,11 @@ void Scenery::Animator::update(float dt)
 	}
 }
 
+void Scenery::Animator::reset()
+{
+	setTime(0);
+}
+
 int Scenery::Animator::getCurrentTimeKey()
 {
 	int res = timekey.begin()->first;
@@ -55,7 +85,7 @@ int Scenery::Animator::getCurrentTimeKey()
 
 float Scenery::Animator::getNextTime(int currentKey)
 {
-	int res = end;
+	float res = end;
 
 	for (auto it : timekey)
 		if (currentKey != it.first && timekey[currentKey] < it.second && it.second < res)
@@ -116,4 +146,48 @@ std::function<float(float, float, float)> Scenery::bezier(float a, float b)
 
 			return (i * i * (3 - 2 * i)) * (b - a) + a;
 		});
+}
+
+void Scenery::AnimatorBundle::addAnimator(Animator* animator)
+{
+	bundle.push_back(animator);
+}
+
+void Scenery::AnimatorBundle::play()
+{
+	run = true;
+}
+
+void Scenery::AnimatorBundle::pause()
+{
+	run = false;
+}
+
+void Scenery::AnimatorBundle::reset()
+{
+	for (Animator* a : bundle) a->reset();
+}
+
+void Scenery::AnimatorBundle::setTime(float value)
+{
+	for (Animator* a : bundle) a->setTime(value);
+}
+
+void Scenery::AnimatorBundle::update(float dt)
+{
+	if (!run) return;
+	float trueEnd = end * (pingpong ? 2 : 1);
+
+	if (time < trueEnd || loop) {
+		time += dt;
+	}
+	if (time > trueEnd && loop) {
+		time -= trueEnd;
+	}
+	if (time > trueEnd && !loop) {
+		time = trueEnd;
+	}
+
+	setTime(time);
+
 }

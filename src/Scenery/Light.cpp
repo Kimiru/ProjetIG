@@ -15,6 +15,7 @@ Scenery::Light& Scenery::Light::position(float x, float y, float z)
 	position_values[1] = y;
 	position_values[2] = z;
 	position_values[3] = 1.0f;
+
 	return *this;
 }
 
@@ -125,7 +126,7 @@ void Scenery::Light::turnOff()
 
 void Scenery::Light::use()
 {
-
+	if (!enabled)return;
 	if (doAmbiant)
 		glLightfv(myLight, GL_AMBIENT, ambiant_values);
 	if (doDiffuse)

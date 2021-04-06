@@ -36,6 +36,16 @@ namespace Matrix {
 			}
 		}
 
+		Vec(std::initializer_list<float> list) {
+			auto it = list.begin();
+			int index = 0;
+			while (it != list.end() && index < N) {
+				data[index] = *it;
+				it++;
+				index++;
+			}
+		}
+
 		/// <summary>
 		/// Convert a Vector.
 		/// 
@@ -155,6 +165,15 @@ namespace Matrix {
 		Vec<N> operator<<(float n) {
 			data[N - 1] = n;
 			return *this;
+		}
+
+		float angle(int x, int y) {
+			Vec<2> v = Vec<2>({ data[x], data[y] });
+			v.normalize();
+			float _acos = acos(v.data[0]);
+			float _asin = asin(v.data[1]);
+			float sign = _asin >= 0 ? 1 : -1;
+			return _acos * sign;
 		}
 
 		float length() {

@@ -4,6 +4,7 @@
 #include <Scenery/Triangle.hpp>
 #include <Scenery/Vertex.hpp>
 #include <vector>
+#include <map>
 #include <array>
 #include <memory>
 
@@ -15,16 +16,25 @@ namespace Scenery {
 
 		Bone* previousBone = NULL;
 
-		Bone() { buildOrder = BuildOrder::Matrix; }
+		float boneScale[3] = { .1, .5, .1 };
+
+		Bone() {}
 
 		void build();
 
 		void draw() {
 			glPushMatrix();
-			glTranslatef(0, .25, 0);
-			glScalef(.1, .5, .1);
+			glTranslatef(0, boneScale[1] / 2, 0);
+			glScalef(boneScale[0], boneScale[1], boneScale[2]);
 			glutSolidCube(1);
 			glPopMatrix();
+		}
+
+		void setScale(std::initializer_list<float> list) {
+			int index = 0;
+			auto it = list.begin();
+			while (it != list.end() && index < 3)
+				boneScale[index++] = *it++;
 		}
 
 	};
@@ -57,24 +67,25 @@ namespace Scenery {
 
 		int verticesAmount = 0, triangleAmount = 0, amountBones = 0;
 
-		int* weights = NULL, * trianglesMap = NULL;
+		int* weights = NULL;
 		Vertex* sourceVertices = NULL, * altered = NULL;
-		Triangle* triangles = NULL;
+		std::vector<Triangle> triangles;
+		std::map<Material*, std::vector<Triangle>> materedTriangles;
 		Bone* bones = NULL;
+
+		Material* localMaterial = NULL; // A local material for to be added triangle 
 
 		SkinnedMesh() {}
 		SkinnedMesh(
-			int verticesAmount, const Vertex sourceVertices[], int weights[],
-			int triangleAmount, int trianglesMap[],
+			int verticesAmount, const Vertex sourceVertices[],
+			int weights[],
 			int amountBones);
 
 		~SkinnedMesh() {
 			if (inited) {
-				delete[] trianglesMap;
 				delete[] weights;
 				delete[] sourceVertices;
 				delete[] altered;
-				delete[] triangles;
 				delete[] bones;
 			}
 		}
@@ -83,8 +94,14 @@ namespace Scenery {
 			return bones[index];
 		}
 
-		void init(int verticesAmount, const Vertex sourceVertices[], int weights[],
-			int triangleAmount, int trianglesMap[],
+		void addPolygon(int nbrSide, int nbrPoly, int map[]);
+		void addPolygon(int nbrSide, int nbrPoly, std::initializer_list<int> map);
+
+		void addQuadStrip(int nodes, int map[]);
+		void addQuadStrip(int nodes, std::initializer_list<int> map);
+
+		void init(int verticesAmount, const Vertex sourceVertices[],
+			int weights[],
 			int amountBones);
 
 		void compileSkeleton();

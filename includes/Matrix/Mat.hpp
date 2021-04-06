@@ -145,6 +145,27 @@ namespace Matrix {
 			return res;
 		}
 
+		static Mat<N> rot(float angle, float x, float y, float z) {
+			Mat<4> res = Mat<4>::id();
+
+			float c = cos(angle);
+			float s = sin(angle);
+
+			res[0][0] = x * x + c * (1 - x * x);
+			res[1][0] = x * y * (1 - c) - z * s;
+			res[2][0] = x * z * (1 - c) + y * s;
+			res[0][1] = x * y * (1 - c) + z * s;
+			res[1][1] = y * y + c * (1 - y * y);
+			res[2][1] = y * z * (1 - c) - x * s;
+			res[0][2] = x * z * (1 - c) - y * s;
+			res[1][2] = y * z * (1 - c) + x * s;
+			res[2][2] = z * z + c * (1 - z * z);
+
+			return res;
+
+		}
+
+
 		/**
 			Return the translation matrix of given values
 				1  0  0  x
@@ -160,6 +181,7 @@ namespace Matrix {
 
 			return res;
 		}
+
 
 		static Mat<4> translate(float x, float y, float z) {
 			Mat<N> res = Mat<4>::id();

@@ -27,9 +27,7 @@ void Scenery::Triangle::end()
 
 void Scenery::Triangle::draw()
 {
-
 	_1->use();
 	_2->use();
 	_3->use();
-
 }

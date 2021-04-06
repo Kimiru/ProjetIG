@@ -27,7 +27,7 @@ float& Scenery::Euler::x()
 float& Scenery::Euler::x(float n)
 {
 	built = false;
-	data[0] = n;
+	data[0] = n + base[0];
 	return data[0];
 }
 
@@ -46,7 +46,7 @@ float& Scenery::Euler::y()
 float& Scenery::Euler::y(float n)
 {
 	built = false;
-	data[1] = n;
+	data[1] = n + base[1];
 	return data[1];
 }
 
@@ -65,7 +65,7 @@ float& Scenery::Euler::z()
 float& Scenery::Euler::z(float n)
 {
 	built = false;
-	data[2] = n;
+	data[2] = n + base[2];
 	return data[2];
 }
 
@@ -76,24 +76,32 @@ float& Scenery::Euler::rz(float n)
 	return data[2];
 }
 
+void Scenery::Euler::setBase(std::initializer_list<float> list)
+{
+	int index = 0;
+	auto it = list.begin();
+	while (it != list.end() && index < 3) {
+		data[index] = base[index] = *it++;
+		index++;
+	}
+}
+
+void Scenery::Euler::reset()
+{
+	for (int i = 0; i < 3; i++)
+		data[i] = base[i];
+}
+
 void Scenery::Euler::build()
 {
 	rotationMatrix = Mat<4>::id();
 
-	if (buildOrder == BuildOrder::GL) {
-		for (int i = 0; i < 3; i++) {
-			int cstep = step(i);
-			if (data[cstep] != 0)
-				rotationMatrix = rotationMatrix * getMatrixStep(i);
-		}
+	for (int i = 0; i < 3; i++) {
+		int cstep = step(i);
+		if (data[cstep] != 0)
+			rotationMatrix = getMatrixStep(i) * rotationMatrix;
 	}
-	else {
-		for (int i = 2; i >= 0; i--) {
-			int cstep = step(i);
-			if (data[cstep] != 0)
-				rotationMatrix = rotationMatrix * getMatrixStep(i);
-		}
-	}
+
 
 	built = true;
 }

@@ -31,35 +31,18 @@ void Scenery::Object::build()
 {
 	transformationMatrix = Mat<4>::id();
 
-	if (buildOrder == BuildOrder::GL) {
-		if (!translation.all(0)) {
-			Mat<4> translationMatrix = Mat<4>::translate(translation.data);
-			transformationMatrix = transformationMatrix * translationMatrix;
-		}
-		if (rotation.isRotation()) {
-			Mat<4> rotationMatrix = rotation.getMatrix();
-			transformationMatrix = transformationMatrix * rotationMatrix;
-		}
-		if (!translation.all(1)) {
-			Mat<4> scaleMatrix = Mat<4>::scale(scale.data);
-			transformationMatrix = transformationMatrix * scaleMatrix;
-		}
+	if (!translation.all(1)) {
+		Mat<4> scaleMatrix = Mat<4>::scale(scale.data);
+		transformationMatrix = transformationMatrix * scaleMatrix;
 	}
-	else {
-		if (!translation.all(1)) {
-			Mat<4> scaleMatrix = Mat<4>::scale(scale.data);
-			transformationMatrix = transformationMatrix * scaleMatrix;
-		}
-		if (rotation.isRotation()) {
-			Mat<4> rotationMatrix = rotation.getMatrix();
-			transformationMatrix = transformationMatrix * rotationMatrix;
-		}
-		if (!translation.all(0)) {
-			Mat<4> translationMatrix = Mat<4>::translate(translation.data);
-			transformationMatrix = transformationMatrix * translationMatrix;
-		}
+	if (rotation.isRotation()) {
+		Mat<4> rotationMatrix = rotation.getMatrix();
+		transformationMatrix = transformationMatrix * rotationMatrix;
 	}
-
+	if (!translation.all(0)) {
+		Mat<4> translationMatrix = Mat<4>::translate(translation.data);
+		transformationMatrix = transformationMatrix * translationMatrix;
+	}
 
 	built = true;
 }
@@ -99,7 +82,8 @@ void Scenery::Object::render()
 	}
 
 	if (material != NULL) {
-		glPushAttrib(GL_LIGHTING_BIT);
+		Material::save();
+		Material::base();
 		material->use();
 	}
 
@@ -109,7 +93,7 @@ void Scenery::Object::render()
 		child->render();
 
 	if (material != NULL) {
-		glPopAttrib();
+		Material::restore();
 	}
 
 	glPopMatrix();

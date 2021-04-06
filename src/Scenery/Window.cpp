@@ -36,6 +36,7 @@ void Scenery::Window::create(int argc, char** argv, int width, int height, const
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_AUTO_NORMAL);
+	glEnable(GL_CULL_FACE);
 
 	glutReshapeFunc(resize);
 

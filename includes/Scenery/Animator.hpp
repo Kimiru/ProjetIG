@@ -27,7 +27,7 @@ namespace Scenery {
 
 		bool loop = false;
 		bool pingpong = false;
-		float* ref = NULL, time = 0, end = 0;
+		float* ref = NULL, time = 0, end = 1;
 		float value = 0;
 
 		UpdateMethode methode = UpdateMethode::VALUE;
@@ -38,11 +38,32 @@ namespace Scenery {
 		Animator() {}
 		Animator(float* ref) : ref(ref) {}
 
+		void setTime(float value);
 		void addKey(int index, float time, std::function<float(float, float, float)> func);
 		void update(float dt);
+		void reset();
 		int getCurrentTimeKey();
 		float getNextTime(int currentKey);
 		float getCurrentTime();
+	};
+
+	class AnimatorBundle {
+
+	public:
+
+		std::vector<Animator*> bundle;
+		bool run = false;
+		float end = 1, time = 0;
+		bool loop = false;
+		bool pingpong = false;
+
+		void addAnimator(Animator* animator);
+		void play();
+		void pause();
+		void reset();
+		void setTime(float value);
+		void update(float dt);
+
 	};
 
 }

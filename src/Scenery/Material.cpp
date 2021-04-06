@@ -72,8 +72,34 @@ Scenery::Material& Scenery::Material::frontAndBack()
 	return *this;
 }
 
+Scenery::Material& Scenery::Material::cullFront()
+{
+	cullingFace = GL_FRONT;
+	doCull = true;
+	return *this;
+}
+
+Scenery::Material& Scenery::Material::cullBack()
+{
+	doCull = true;
+	cullingFace = GL_BACK;
+	return *this;
+}
+
+Scenery::Material& Scenery::Material::cullNone()
+{
+	doCull = false;
+	return *this;
+}
+
 void Scenery::Material::use()
 {
+	if (doCull) {
+		glEnable(GL_CULL_FACE);
+		glCullFace(cullingFace);
+	}
+	else
+		glDisable(GL_CULL_FACE);
 	if (doAmbiant)
 		glMaterialfv(side, GL_AMBIENT, ambiant_values);
 	if (doDiffuse)
@@ -84,8 +110,26 @@ void Scenery::Material::use()
 		glMaterialfv(side, GL_EMISSION, emission_values);
 	if (doShininess)
 		glMaterialf(side, GL_SHININESS, shininess_value);
+}
 
-	int err = glGetError();
-	if (err != GL_NO_ERROR)
-		std::cout << "Error using material " << err << std::endl;
+void Scenery::Material::save()
+{
+	glPushAttrib(GL_LIGHTING_BIT);
+}
+
+void Scenery::Material::base()
+{
+	float va[] = { .2f, .2f, .2f, 1 };
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, va);
+	float vd[] = { .8f, .8f, .8f, 1 };
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, va);
+	float vs[] = { 0, 0, 0, 1 };
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vs);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, vs);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0);
+}
+
+void Scenery::Material::restore()
+{
+	glPopAttrib();
 }

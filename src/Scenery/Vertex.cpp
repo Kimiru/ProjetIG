@@ -12,9 +12,19 @@ Scenery::Vertex::Vertex()
 
 Scenery::Vertex::Vertex(float x, float y, float z)
 {
+	useTexture = false;
 	position[0] = x;
 	position[1] = y;
 	position[2] = z;
+}
+
+Scenery::Vertex::Vertex(std::initializer_list<float> list)
+{
+	useTexture = false;
+	auto it = list.begin();
+	position[0] = *it++;
+	position[1] = *it++;
+	position[2] = *it++;
 }
 
 void Scenery::Vertex::setTexPos(float x, float y)
