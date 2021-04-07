@@ -45,6 +45,7 @@ namespace Scenery {
 		int getCurrentTimeKey();
 		float getNextTime(int currentKey);
 		float getCurrentTime();
+		void byReference() { methode = UpdateMethode::REF; }
 	};
 
 	class AnimatorBundle {

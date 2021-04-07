@@ -391,7 +391,7 @@ Player::Player()
 		material->diffuse(.3, 0, 0, 1.0).ambiant(1, 0, 0, 1).front();
 	}
 
-
+	// c1.right > c2.left && c1.left < c2.right
 	// idle animation
 	{
 		idle.end = true;
@@ -407,14 +407,14 @@ Player::Player()
 		// right arm
 		idleAnimators[0].methode = UpdateMethode::REF;
 		idleAnimators[0].ref = &bones[6].rotation.data[0];
-		idleAnimators[0].addKey(0, 0, bezier(M_PI_4, -M_PI_4)); // X
+		idleAnimators[0].addKey(0, 0, bezier(M_PI_4, -M_PI_4 / 2)); // X
 		idleAnimators[1].methode = UpdateMethode::REF;
 		idleAnimators[1].ref = &bones[6].rotation.data[2];
 		idleAnimators[1].addKey(0, 0, linear(M_PI, M_PI)); // Z
 		// left arm
 		idleAnimators[2].methode = UpdateMethode::REF;
 		idleAnimators[2].ref = &bones[8].rotation.data[0];
-		idleAnimators[2].addKey(0, 0, bezier(M_PI_4, -M_PI_4)); // X
+		idleAnimators[2].addKey(0, 0, bezier(M_PI_4, -M_PI_4 / 2)); // X
 		idleAnimators[3].methode = UpdateMethode::REF;
 		idleAnimators[3].ref = &bones[8].rotation.data[2];
 		idleAnimators[3].addKey(0, 0, linear(-M_PI, -M_PI)); // Z
@@ -484,9 +484,40 @@ void Player::checkInput(float dt)
 		}
 	}
 
+	if (Window::getSpecial(GLUT_KEY_LEFT)) {
+		float camangle = (camera - translation).angle(2, 0);
+		float _cos = cos(camangle + M_PI_2);
+		float _sin = sin(camangle + M_PI_2);
+		camera.data[0] += _sin * dt * 10;
+		camera.data[2] += _cos * dt * 10;
+	}
+	if (Window::getSpecial(GLUT_KEY_RIGHT)) {
+		float camangle = (camera - translation).angle(2, 0);
+		float _cos = cos(camangle - M_PI_2);
+		float _sin = sin(camangle - M_PI_2);
+		camera.data[0] += _sin * dt * 10;
+		camera.data[2] += _cos * dt * 10;
+	}
+
 	if (Window::getKey('r')) {
-		float angle = (leader - translation).angle(2, 0) - (camera - translation).angle(2, 0) + M_PI;
-		std::cout << "angle:" << angle;
+		float camangle = (camera - translation).angle(2, 0);
+		float angle = (translation - leader).angle(2, 0) - camangle;
+		angle = fmod(angle + M_PI, 2 * M_PI) - M_PI;
+		if (abs(angle) > .005) {
+			if (angle < 0) {
+				float _cos = cos(camangle - M_PI_2);
+				float _sin = sin(camangle - M_PI_2);
+				camera.data[0] += _sin * dt * 10;
+				camera.data[2] += _cos * dt * 10;
+			}
+
+			if (angle > 0) {
+				float _cos = cos(camangle + M_PI_2);
+				float _sin = sin(camangle + M_PI_2);
+				camera.data[0] += _sin * dt * 10;
+				camera.data[2] += _cos * dt * 10;
+			}
+		}
 	}
 }
 

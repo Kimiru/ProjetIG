@@ -10,6 +10,7 @@
 #include <Scenery/Euler.hpp>
 #include <memory>
 #include <Objects/Player.hpp>
+#include <Scenery/Hitbox.hpp>
 
 using namespace Matrix;
 using namespace Scenery;
@@ -17,7 +18,12 @@ using namespace Scenery;
 static float angle = 0;
 static Light l;
 
+
+Animator a;
 Player b;
+
+Hitbox::Box box;
+Hitbox::Cylinder c;
 
 void update(float dt) {
 	if (Window::getKey(0x1B)) {
@@ -31,7 +37,7 @@ void update(float dt) {
 	l.position(cos(angle) * 10, .05f, sin(angle) * 10);
 
 	b.update(dt);
-
+	a.update(dt);
 	glutPostRedisplay();
 }
 
@@ -58,7 +64,6 @@ void draw() {
 	glutSolidCube(1);
 	glPopMatrix();
 
-
 	/*Euler e;
 	e.z(angle * M_PI / 180);
 	auto rm = e.getMatrix();
@@ -77,6 +82,8 @@ void draw() {
 
 	b.render();
 
+	box.draw();
+	c.draw();
 
 	glPopMatrix();
 	glFlush();
@@ -88,6 +95,23 @@ void draw() {
 
 int main(int argc, char** argv) {
 
+	box.size[0] = 1;
+	box.size[1] = 2;
+	box.size[2] = .5;
+
+	c.radius = .5;
+	c.height = 1;
+
+	a.addKey(0, 0, bezier(-2, 2));
+	a.end = 2;
+	a.loop = true;
+	a.pingpong = true;
+	a.ref = &c.position[0];
+	a.byReference();
+
+	box.collide(c);
+	c.collide(box);
+
 	l.diffuse(1.0f, 1.0f, 1.0f, 1.0f).position(-10.0f, .0f, 0.0f);
 	l.specular(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -97,6 +121,8 @@ int main(int argc, char** argv) {
 	l.turnOn();
 
 	Window::launch();
+
+
 
 	return 0;
 }
