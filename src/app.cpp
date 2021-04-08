@@ -11,6 +11,7 @@
 #include <memory>
 #include <Objects/Player.hpp>
 #include <Scenery/Hitbox.hpp>
+#include <Objects/Island.hpp>
 
 using namespace Matrix;
 using namespace Scenery;
@@ -22,8 +23,11 @@ static Light l;
 Animator a;
 Player b;
 
-Hitbox::Box box;
-Hitbox::Cylinder c;
+Hitbox::Box box, box1, box2, box3;
+Hitbox::Cylinder c, c1, c2, c3;
+
+Hitbox::HitboxBundle bundle;
+Island island = Island({ 0, 0, 0 }, { 5, 5 });
 
 void update(float dt) {
 	if (Window::getKey(0x1B)) {
@@ -58,11 +62,7 @@ void draw() {
 	glutSolidSphere(.1, 4, 4);
 	glPopMatrix();
 
-	glPushMatrix();
-	glTranslatef(0, -.1, 0);
-	glScalef(10, .2, 10);
-	glutSolidCube(1);
-	glPopMatrix();
+	
 
 	/*Euler e;
 	e.z(angle * M_PI / 180);
@@ -80,10 +80,20 @@ void draw() {
 	//t.translation[1] = -1;
 	//t.render();
 
+	island.render();
+
 	b.render();
 
 	box.draw();
+	box1.draw();
+	box2.draw();
+	box3.draw();
 	c.draw();
+	c1.draw();
+	c2.draw();
+	c3.draw();
+
+
 
 	glPopMatrix();
 	glFlush();
@@ -98,6 +108,27 @@ int main(int argc, char** argv) {
 	box.size[0] = 1;
 	box.size[1] = 2;
 	box.size[2] = .5;
+
+	box1.position.set({ 1.0f, 2.0f, 0.0f });
+	box2.position.set({ 3.0f, 1.0f, 0.0f });
+	box3.position.set({ 1.0f, 1.0f, 1.0f });
+	box1.size.set({ 1, 1, 0.5 });
+	box2.size.set({ 2, 0.5, 0.2 });
+	box3.size.set({ 1, 0.1, 0.3 });
+
+	c1.position.set({ 4.0f, 1.0f, 0.0f });
+	c2.position.set({ 1.0f, 2.0f, 1.0f });
+	c3.position.set({ 2.0f, 1.0f, 0.0f });
+
+	bundle.add(&box);
+	bundle.add(&box1);
+	bundle.add(&box2);
+	bundle.add(&box3);
+	bundle.add(&c1);
+	bundle.add(&c2);
+	bundle.add(&c3);
+
+	c.position[1] = 1.25;
 
 	c.radius = .5;
 	c.height = 1;

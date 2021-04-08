@@ -91,6 +91,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)includes</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -122,10 +123,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories> $(SolutionDir)includes</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -145,7 +148,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Objects\Island.cpp" />
+    <ClCompile Include="src\Objects\Player.cpp" />
+    <ClCompile Include="src\Objects\Tree.cpp" />
+    <ClCompile Include="src\Scenery\Animator.cpp" />
     <ClCompile Include="src\Scenery\Euler.cpp" />
+    <ClCompile Include="src\Scenery\Hitbox.cpp" />
     <ClCompile Include="src\Scenery\Object.cpp" />
     <ClCompile Include="includes\Scenery\Vertex.hpp" />
     <ClCompile Include="src\app.cpp">
@@ -155,17 +163,78 @@
     <ClCompile Include="src\Matrix\Vec.cpp" />
     <ClCompile Include="src\Scenery\Light.cpp" />
     <ClCompile Include="src\Scenery\Material.cpp" />
+    <ClCompile Include="src\Scenery\SkinnedMesh.cpp" />
+    <ClCompile Include="src\Scenery\Triangle.cpp" />
     <ClCompile Include="src\Scenery\Vertex.cpp" />
     <ClCompile Include="src\Scenery\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="includes\GL\amesa.h" />
+    <ClInclude Include="includes\GL\dmesa.h" />
+    <ClInclude Include="includes\GL\fxmesa.h" />
+    <ClInclude Include="includes\GL\ggimesa.h" />
+    <ClInclude Include="includes\GL\gl.h" />
+    <ClInclude Include="includes\GL\GLAUX.H" />
+    <ClInclude Include="includes\GL\GLAux.vc8.h" />
+    <ClInclude Include="includes\GL\glew.h" />
+    <ClInclude Include="includes\GL\glext.h" />
+    <ClInclude Include="includes\GL\glfbdev.h" />
+    <ClInclude Include="includes\GL\glu.h" />
+    <ClInclude Include="includes\GL\glut.h" />
+    <ClInclude Include="includes\GL\glutf90.h" />
+    <ClInclude Include="includes\GL\glu_mangle.h" />
+    <ClInclude Include="includes\GL\glx.h" />
+    <ClInclude Include="includes\GL\glxew.h" />
+    <ClInclude Include="includes\GL\glxext.h" />
+    <ClInclude Include="includes\GL\glx_mangle.h" />
+    <ClInclude Include="includes\GL\gl_mangle.h" />
+    <ClInclude Include="includes\GL\internal\dri_interface.h" />
+    <ClInclude Include="includes\GL\internal\glcore.h" />
+    <ClInclude Include="includes\GL\internal\sarea.h" />
+    <ClInclude Include="includes\GL\mesa_wgl.h" />
+    <ClInclude Include="includes\GL\mglmesa.h" />
+    <ClInclude Include="includes\GL\osmesa.h" />
+    <ClInclude Include="includes\GL\svgamesa.h" />
+    <ClInclude Include="includes\GL\uglglutshapes.h" />
+    <ClInclude Include="includes\GL\uglmesa.h" />
+    <ClInclude Include="includes\GL\vms_x_fix.h" />
+    <ClInclude Include="includes\GL\wglew.h" />
+    <ClInclude Include="includes\GL\wmesa.h" />
+    <ClInclude Include="includes\GL\xmesa.h" />
+    <ClInclude Include="includes\GL\xmesa_x.h" />
+    <ClInclude Include="includes\GL\xmesa_xf86.h" />
     <ClInclude Include="includes\Matrix\Vec.hpp" />
     <ClInclude Include="includes\Matrix\Mat.hpp" />
+    <ClInclude Include="includes\Objects\Island.hpp" />
+    <ClInclude Include="includes\Objects\Player.hpp" />
+    <ClInclude Include="includes\Objects\Tree.hpp" />
+    <ClInclude Include="includes\Scenery\Animator.hpp" />
     <ClInclude Include="includes\Scenery\Euler.hpp" />
+    <ClInclude Include="includes\Scenery\Hitbox.hpp" />
     <ClInclude Include="includes\Scenery\Light.hpp" />
     <ClInclude Include="includes\Scenery\Material.hpp" />
     <ClInclude Include="includes\Scenery\Object.hpp" />
+    <ClInclude Include="includes\Scenery\SkinnedMesh.hpp" />
+    <ClInclude Include="includes\Scenery\Triangle.hpp" />
     <ClInclude Include="includes\Scenery\Window.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\glew32.lib" />
+    <Library Include="lib\glew32mxd.lib" />
+    <Library Include="lib\glu32.mesa.lib" />
+    <Library Include="lib\glu32.ms.Lib" />
+    <Library Include="lib\glut32.lib" />
+    <Library Include="lib\glut32.mesa.lib" />
+    <Library Include="lib\glut32.ms.lib" />
+    <Library Include="lib\glut64.lib" />
+    <Library Include="lib\Modules2011-2012.lib" />
+    <Library Include="lib\OpenGL32.mesa.lib" />
+    <Library Include="lib\OpenGL32.ms.Lib" />
+    <Library Include="lib\osmesa32.mesa.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore" />
+    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

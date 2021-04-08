@@ -4,15 +4,17 @@
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <vector>
 
 #include <Matrix/Vec.hpp>
 
 namespace Hitbox {
 
+	
+
 	class Box {
 
 	public:
-
 		Matrix::Vec<3> position;
 		Matrix::Vec<3> size;
 
@@ -41,6 +43,21 @@ namespace Hitbox {
 		bool collide(Cylinder c);
 
 		void draw();
+
+	};
+
+	class HitboxBundle {
+
+	public:
+		std::vector<Cylinder*> cylinders;
+		std::vector<Box*> boxes;
+		Cylinder* foundCylinder;
+		Box* foundBox;
+
+		void add(Cylinder* cylinder);
+		void add(Box* boxes);
+		bool collide(Box box);
+		bool collide(Cylinder cylinder);
 
 	};
 

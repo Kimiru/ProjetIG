@@ -64,3 +64,59 @@ void Hitbox::Cylinder::draw()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glPopMatrix();
 }
+
+void Hitbox::HitboxBundle::add(Cylinder* cylinder)
+{
+	cylinders.push_back(cylinder);
+}
+
+void Hitbox::HitboxBundle::add(Box* box)
+{
+	boxes.push_back(box);
+}
+
+bool Hitbox::HitboxBundle::collide(Box box)
+{
+	foundBox = NULL;
+	foundCylinder = NULL;
+
+	for (Box* b : boxes) {
+		if (b->collide(box)) {
+			foundBox = b;
+			return true;
+		}
+	}
+
+	for (Cylinder* c : cylinders) {
+		if (c->collide(box)) {
+			foundCylinder = c;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool Hitbox::HitboxBundle::collide(Cylinder cylinder)
+{
+	foundBox = NULL;
+	foundCylinder = NULL;
+
+	for (Box* b : boxes) {
+		if (b->collide(cylinder)) {
+			foundBox = b;
+			return true;
+		}
+	}
+
+	for (Cylinder* c : cylinders) {
+		if (c->collide(cylinder)) {
+			foundCylinder = c;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+

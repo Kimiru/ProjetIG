@@ -167,6 +167,14 @@ namespace Matrix {
 			return *this;
 		}
 
+		void set(std::initializer_list<float> list) {
+			int index = 0;
+			auto it = list.begin();
+			while (it != list.end() && index < N) {
+				data[index++] = *it++;
+			}
+		}
+
 		float angle(int x, int y) {
 			Vec<2> v = Vec<2>({ data[x], data[y] });
 			v.normalize();
