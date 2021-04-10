@@ -10,8 +10,6 @@
 
 namespace Hitbox {
 
-	
-
 	class Box {
 
 	public:
@@ -58,6 +56,21 @@ namespace Hitbox {
 		void add(Box* boxes);
 		bool collide(Box box);
 		bool collide(Cylinder cylinder);
+
+		/**
+		 * Test for collision between the hitbox and all boxes and cylinders
+		 * in case of collision, call funcBox
+		 */
+		void collide(Box hitbox,
+			std::function<void(Cylinder, Box)> funcBox);
+		/**
+		 * Test for collision between the hitbox and all boxes and cylinders
+		 * in case of collision with a Box, call funcBox
+		 * in case of collision with a Cylinder, call funcCylinder
+		 */
+		void collide(Cylinder hitbox,
+			std::function<void(Cylinder, Box)> funcBox,
+			std::function<void(Cylinder, Cylinder)> funcCylinder);
 
 	};
 
