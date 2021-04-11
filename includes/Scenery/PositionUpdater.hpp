@@ -9,7 +9,7 @@ namespace Scenery {
 
 	public:
 
-		Matrix::Vec<3> vel, acc, drag, delta, lastPos;
+		Matrix::Vec<3> vel, acc, drag, minDrag, delta, lastPos;
 		Matrix::Vec<4>* pos;
 
 		PositionUpdater() { pos = NULL; }
@@ -18,6 +18,7 @@ namespace Scenery {
 		/**
 		 * Compute the relative movement function of
 		 * the velocity, the acceleration, the drag and the deltaTime
+		 * deleta = vel*dt + acc*dt + min(vel*mindrag, mindrag)*dt
 		 */
 		void computeDelta(float dt);
 
@@ -57,5 +58,3 @@ namespace Scenery {
 		template<typename T>
 		void update(float dt, T hitbox, Hitbox::HitboxBundle bundle);
 	};
-
-}
