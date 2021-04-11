@@ -119,4 +119,44 @@ bool Hitbox::HitboxBundle::collide(Cylinder cylinder)
 	return false;
 }
 
+void Hitbox::HitboxBundle::collide(Box hitbox, std::function<void(Box, Box)> funcBox)
+{
+	foundBox = NULL;
+	foundCylinder = NULL;
+
+	for (Box* b : boxes) {
+		if (b->collide(hitbox)) {
+			foundBox = b;
+			funcBox(hitbox, *b);
+		}
+	}
+
+	for (Cylinder* c : cylinders) {
+		if (c->collide(hitbox)) {
+			foundCylinder = c;
+			funcBox(hitbox, (Hitbox::Box) *c);
+		}
+	}
+}
+
+void Hitbox::HitboxBundle::collide(Cylinder hitbox, std::function<void(Cylinder, Box)> funcBox, std::function<void(Cylinder, Cylinder)> funcCylinder)
+{
+	foundBox = NULL;
+	foundCylinder = NULL;
+
+	for (Box* b : boxes) {
+		if (b->collide(hitbox)) {
+			foundBox = b;
+			funcBox(hitbox, *b);
+		}
+	}
+
+	for (Cylinder* c : cylinders) {
+		if (c->collide(hitbox)) {
+			foundCylinder = c;
+			funcCylinder(hitbox, *c);
+		}
+	}
+}
+
 

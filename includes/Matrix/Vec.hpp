@@ -167,6 +167,72 @@ namespace Matrix {
 			return *this;
 		}
 
+
+		/** 
+			Return the vector with the minimum value of both vector
+		**/
+		Vec<N> operator<(Vec<N> v) {
+			Vec<N> res;
+			for (int i = 0; i < N; i++) {
+				res.data[i] = v.data[i] > data[i] ? data[i] : v.data[i];
+			}
+			return res;
+		}
+
+		/**
+			Return the vector with the maximum value of both vector
+		**/
+		Vec<N> operator>(Vec<N> v) {
+			Vec<N> res;
+			for (int i = 0; i < N; i++) {
+				res.data[i] = v.data[i] < data[i] ? data[i] : v.data[i];
+			}
+			return res;
+		}
+
+
+		/** 
+			Return the vector with opposite value of each data.
+		**/
+		Vec<N> operator-() {
+			Vec<N> res;
+			for (int i = 0; i < N; i++) {
+				res.data[i] = -data[i];
+			}
+			return res;
+		}
+
+		/**
+			 
+		**/
+		Vec<N> abs() {
+			Vec<N> res;
+			for (int i = 0; i < N; i++) {
+				res.data[i] = data[i] >= 0 ? data[i] : -data[i];
+			}
+			return res;
+		}
+
+		Vec<N> sign() {
+			Vec<N> res;
+			for (int i = 0; i < N; i++) {
+				res.data[i] = data[i] >= 0 ? 1 : -1;
+			}
+			return res;
+		}
+
+
+		/** 
+			Multiply 2 vectors
+		**/
+		Vec<N> multiply(Vec<N> v) {
+			Vec<N> res;
+			for (int i = 0; i < N; i++) {
+				res.data[i] = data[i] * v.data[i];
+			}
+			return res;
+		}
+
 		void set(std::initializer_list<float> list) {
 			int index = 0;
 			auto it = list.begin();

@@ -1,4 +1,4 @@
-#pragma once
+	#pragma once
 
 #include <stdlib.h>
 #include <GL/glut.h>
@@ -7,6 +7,7 @@
 #include <vector>
 
 #include <Matrix/Vec.hpp>
+#include <functional>
 
 namespace Hitbox {
 
@@ -62,7 +63,7 @@ namespace Hitbox {
 		 * in case of collision, call funcBox
 		 */
 		void collide(Box hitbox,
-			std::function<void(Cylinder, Box)> funcBox);
+			std::function<void(Box, Box)> funcBox);
 		/**
 		 * Test for collision between the hitbox and all boxes and cylinders
 		 * in case of collision with a Box, call funcBox
