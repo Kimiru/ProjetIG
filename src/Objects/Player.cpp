@@ -2,6 +2,15 @@
 
 Player::Player()
 {
+	positionUpdater.pos = &translation;
+	hitbox.anchorY = Hitbox::Anchor::BOTTOM;
+	hitbox.radius = .5;
+	hitbox.height = 1.2;
+
+	groundHitbox.anchorY = Hitbox::Anchor::TOP;
+	groundHitbox.radius = .2;
+	groundHitbox.height = .01;
+
 	eyeMater.diffuse(0, 0, 0, 0).ambiant(0, 0, 0, 0).frontAndBack();
 
 	int vamt = 86;
@@ -484,6 +493,11 @@ void Player::checkInput(float dt)
 		}
 	}
 
+	if (canJump && Window::getKeySingle(' ')) {
+		positionUpdater.vel.data[1] += 2;
+		canJump--;
+	}
+
 	if (Window::getSpecial(GLUT_KEY_LEFT)) {
 		float camangle = (camera - translation).angle(2, 0);
 		float _cos = cos(camangle + M_PI_2);
@@ -525,14 +539,27 @@ void Player::updatePos(float dt)
 {
 	const float tolerence = .1;
 
+	positionUpdater.vel.set({ 0, positionUpdater.vel.data[1], 0 });
+	positionUpdater.acc.data[1] = -5;
 	Vec<3> dir = leader - translation;
 	dir.data[1] = 0;
 
 	if (dir.length() > tolerence) {
 		dir.normalize();
-		dir *= speed * dt;
-		translation += dir;
+		dir *= speed;
+		positionUpdater.vel += dir;
 		rotation.y(-dir.angle(2, 0));
+	}
+
+
+	Hitbox::HitboxBundle bundle;
+
+	for (Island i : *islands) bundle += i.bundle;
+	positionUpdater.update(dt, hitbox, bundle);
+	hitbox.setPosition(translation);
+	groundHitbox.setPosition(translation);
+	if (positionUpdater.vel.data[1] <= 0 && bundle.collide(groundHitbox)) {
+		canJump = 2;
 	}
 
 }
@@ -581,16 +608,5 @@ void Player::updateCam(float dt)
 			hdif *= dt;
 			camera += Vec<3>({ hdif.data[0], 0, hdif.data[1] });
 		}
-	}
-
-	if (Window::getKey(' ')) {
-		camera.data[0] = 10;
-		camera.data[1] = 10;
-		camera.data[2] = 10;
-	}
-	if (Window::getKey('a')) {
-		camera.data[0] = 0.5;
-		camera.data[1] = -10;
-		camera.data[2] = 0;
 	}
 }

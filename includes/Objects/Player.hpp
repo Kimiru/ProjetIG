@@ -1,11 +1,14 @@
 #pragma once
 
-#include <Scenery/SkinnedMesh.hpp>
-#include <Scenery/Animator.hpp>
+#include "Scenery/SkinnedMesh.hpp"
+#include "Scenery/Animator.hpp"
 
-#include <Scenery/Window.hpp>
+#include "Scenery/Window.hpp"
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include "Objects/Island.hpp"
+#include "Scenery/PositionUpdater.hpp"
+#include "Scenery/Hitbox.hpp"
 
 using namespace Scenery;
 
@@ -17,6 +20,11 @@ public:
 
 	AnimatorBundle idle;
 	Animator idleAnimators[4];
+	std::vector<Island>* islands = NULL;
+	PositionUpdater positionUpdater;
+	Hitbox::Cylinder hitbox, groundHitbox;
+	int canJump = 2;
+
 
 	Vec<3> camera = Vec<3>({ 0, 1, 1 });
 	Vec<3> leader = Vec<3>({ 0, 0, 0.001 });
@@ -27,6 +35,7 @@ public:
 	~Player() { delete material; }
 
 	void update(float dt);
+
 private:
 	void checkInput(float dt);
 	void updatePos(float dt);

@@ -1,28 +1,64 @@
 #include <Scenery/Hitbox.hpp>
 
+
+void Hitbox::Box::setPosition(Matrix::Vec<3> pos)
+{
+	switch (anchorX)
+	{
+	case Hitbox::Anchor::LEFT:
+		pos.data[0] += size.data[0] / 2;
+		break;
+	case Hitbox::Anchor::RIGHT:
+		pos.data[0] -= size.data[0] / 2;
+		break;
+	}
+
+	switch (anchorY)
+	{
+	case Hitbox::Anchor::BOTTOM:
+		pos.data[1] += size.data[1] / 2;
+		break;
+	case Hitbox::Anchor::TOP:
+		pos.data[1] -= size.data[1] / 2;
+		break;
+	}
+
+	switch (anchorZ)
+	{
+	case Hitbox::Anchor::BACK:
+		pos.data[2] += size.data[2] / 2;
+		break;
+	case Hitbox::Anchor::FRONT:
+		pos.data[2] -= size.data[2] / 2;
+		break;
+	}
+
+	position = pos;
+}
+
 bool Hitbox::Box::collide(Box c)
 {
 	Matrix::Vec<3> size_2 = size / 2;
 	Matrix::Vec<3> csize_2 = c.size / 2;
 	/** Right left up down front back**/
 
-	float r1 = position.data[0] + size_2.data[0];
-	float r2 = c.position.data[0] + csize_2.data[0];
+	float r1 = right();
+	float r2 = c.right();
 
-	float l1 = position.data[0] - size_2.data[0];
-	float l2 = c.position.data[0] - csize_2.data[0];
+	float l1 = left();
+	float l2 = c.left();
 
-	float u1 = position.data[1] + size_2.data[1];
-	float u2 = c.position.data[1] + csize_2.data[1];
+	float u1 = top();
+	float u2 = c.top();
 
-	float d1 = position.data[1] - csize_2.data[1];
-	float d2 = c.position.data[1] - csize_2.data[1];
+	float d1 = bottom();
+	float d2 = c.bottom();
 
-	float f1 = position.data[2] + size_2.data[2];
-	float f2 = c.position.data[2] + csize_2.data[2];
+	float f1 = front();
+	float f2 = c.front();
 
-	float b1 = position.data[2] - csize_2.data[2];
-	float b2 = c.position.data[2] - csize_2.data[2];
+	float b1 = back();
+	float b2 = c.back();
 
 	return
 		r1 > l2 && r2 > l1 &&
@@ -37,6 +73,42 @@ void Hitbox::Box::draw()
 	glScalef(size.data[0], size.data[1], size.data[2]);
 	glutWireCube(1);
 	glPopMatrix();
+}
+
+void Hitbox::Cylinder::setPosition(Matrix::Vec<3> pos)
+{
+
+	switch (anchorX)
+	{
+	case Hitbox::Anchor::LEFT:
+		pos.data[0] += radius;
+		break;
+	case Hitbox::Anchor::RIGHT:
+		pos.data[0] -= radius;
+		break;
+	}
+
+	switch (anchorY)
+	{
+	case Hitbox::Anchor::BOTTOM:
+		pos.data[1] += height / 2;
+		break;
+	case Hitbox::Anchor::TOP:
+		pos.data[1] -= height / 2;
+		break;
+	}
+
+	switch (anchorZ)
+	{
+	case Hitbox::Anchor::BACK:
+		pos.data[2] += radius;
+		break;
+	case Hitbox::Anchor::FRONT:
+		pos.data[2] -= radius;
+		break;
+	}
+
+	position = pos;
 }
 
 bool Hitbox::Cylinder::collide(Box b)
@@ -134,7 +206,7 @@ void Hitbox::HitboxBundle::collide(Box hitbox, std::function<void(Box, Box)> fun
 	for (Cylinder* c : cylinders) {
 		if (c->collide(hitbox)) {
 			foundCylinder = c;
-			funcBox(hitbox, (Hitbox::Box) *c);
+			funcBox(hitbox, (Hitbox::Box)*c);
 		}
 	}
 }

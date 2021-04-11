@@ -19,14 +19,11 @@ using namespace Scenery;
 static float angle = 0;
 static Light l;
 
+std::vector<Island> islands;
 
-Animator a;
-Player b;
 
-Hitbox::Box box, box1, box2, box3;
-Hitbox::Cylinder c, c1, c2, c3;
+Player player;
 
-Hitbox::HitboxBundle bundle;
 Island island = Island({ 0, 0, 0 }, { 5, 5 });
 
 void update(float dt) {
@@ -38,10 +35,9 @@ void update(float dt) {
 	}
 	angle += dt * M_PI_2 / 2;
 
-	l.position(cos(angle) * 10, .05f, sin(angle) * 10);
+	l.position(cos(angle) * 10, 2, sin(angle) * 10);
 
-	b.update(dt);
-	a.update(dt);
+	player.update(dt);
 	glutPostRedisplay();
 }
 
@@ -50,50 +46,18 @@ void draw() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glPushMatrix();
 
-	gluLookAt(
-		b.camera.data[0], b.camera.data[1], b.camera.data[2],
-		b.translation.data[0], b.translation.data[1] + .5, b.translation.data[2],
+	gluLookAt( // define cam to play cam lookat play belly
+		player.camera.data[0], player.camera.data[1], player.camera.data[2],
+		player.translation.data[0], player.translation.data[1] + .5, player.translation.data[2],
 		.0f, 1.0f, .0f);
 
-	l.use();
-
-	glPushMatrix();
-	glTranslatef(b.leader[0], b.leader[1], b.leader[2]);
-	glutSolidSphere(.1, 4, 4);
-	glPopMatrix();
-
-	
-
-	/*Euler e;
-	e.z(angle * M_PI / 180);
-	auto rm = e.getMatrix();
-
-
-	glMultMatrixf((const float*)rm.data);*/
-	//auto mat = Mat<4>::rotZ(angle * M_PI / 180);
-
-	//glMultMatrixf((const float*)mat.data);
-
-
-	//p1.get()->render();
-
-	//t.translation[1] = -1;
-	//t.render();
+	l.use(); // use light
 
 	island.render();
 
-	b.render();
-
-	box.draw();
-	box1.draw();
-	box2.draw();
-	box3.draw();
-	c.draw();
-	c1.draw();
-	c2.draw();
-	c3.draw();
-
-
+	player.render();
+	player.groundHitbox.draw();
+	island.baseBox.draw();
 
 	glPopMatrix();
 	glFlush();
@@ -104,45 +68,9 @@ void draw() {
 }
 
 int main(int argc, char** argv) {
-
-	box.size[0] = 1;
-	box.size[1] = 2;
-	box.size[2] = .5;
-
-	box1.position.set({ 1.0f, 2.0f, 0.0f });
-	box2.position.set({ 3.0f, 1.0f, 0.0f });
-	box3.position.set({ 1.0f, 1.0f, 1.0f });
-	box1.size.set({ 1, 1, 0.5 });
-	box2.size.set({ 2, 0.5, 0.2 });
-	box3.size.set({ 1, 0.1, 0.3 });
-
-	c1.position.set({ 4.0f, 1.0f, 0.0f });
-	c2.position.set({ 1.0f, 2.0f, 1.0f });
-	c3.position.set({ 2.0f, 1.0f, 0.0f });
-
-	bundle.add(&box);
-	bundle.add(&box1);
-	bundle.add(&box2);
-	bundle.add(&box3);
-	bundle.add(&c1);
-	bundle.add(&c2);
-	bundle.add(&c3);
-
-	c.position[1] = 1.25;
-
-	c.radius = .5;
-	c.height = 1;
-
-	a.addKey(0, 0, bezier(-2, 2));
-	a.end = 2;
-	a.loop = true;
-	a.pingpong = true;
-	a.ref = &c.position[0];
-	a.byReference();
-
-	box.collide(c);
-	c.collide(box);
-
+	player.islands = &islands;
+	player.translation.data[1] = 1;
+	islands.push_back(island);
 	l.diffuse(1.0f, 1.0f, 1.0f, 1.0f).position(-10.0f, .0f, 0.0f);
 	l.specular(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -152,8 +80,6 @@ int main(int argc, char** argv) {
 	l.turnOn();
 
 	Window::launch();
-
-
 
 	return 0;
 }

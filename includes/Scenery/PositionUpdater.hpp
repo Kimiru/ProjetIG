@@ -10,10 +10,10 @@ namespace Scenery {
 	public:
 
 		Matrix::Vec<3> vel, acc, drag, minDrag, delta, lastPos;
-		Matrix::Vec<4>* pos;
+		Matrix::Vec<3>* pos;
 
 		PositionUpdater() { pos = NULL; }
-		PositionUpdater(Matrix::Vec<4>* pos) : pos(pos) {}
+		PositionUpdater(Matrix::Vec<3>* pos) : pos(pos) {}
 
 		/**
 		 * Compute the relative movement function of
@@ -23,12 +23,12 @@ namespace Scenery {
 		void computeDelta(float dt);
 
 		/**
-		 * Apply the delta to the position
-		 * Saving the last position
+		 * Apply the delta to the pos
+		 * Saving the last pos
 		 */
 		void applyDelta();
 		/**
-		 * Reverse position to the last position
+		 * Reverse pos to the last pos
 		 */
 		void reverseDelta();
 		/**
@@ -45,210 +45,222 @@ namespace Scenery {
 		void redoZ();
 
 		/**
-		 * Update the position
+		 * Update the pos
 		 * Calculate the delta and apply it
 		 */
 		void update(float dt);
 
 		/**
-		 * Update the position
+		 * Update the pos
 		 * Calculate the delta and apply it
 		 * Check for collisions between
 		 */
-		template<typename T>
-		void update(float dt, T hitbox, Hitbox::HitboxBundle bundle) {
+		void update(float dt, Hitbox::Box hitbox, Hitbox::HitboxBundle bundle) {
 			update(dt);
-			if constexpr (T == Hitbox::Box) {
-				std::function<void(Box, Box)> func = [this, dt](Hitbox::Box b1, Hitbox::Box b2) {
-					this->reverseDelta();
+			std::function<void(Hitbox::Box, Hitbox::Box)> func = [this, dt](Hitbox::Box b1, Hitbox::Box b2) {
+				this->reverseDelta();
 
-					// Gestion collision x
-					this->redoX();
-					b1.position = *this->pos;
-					if (b1.collide(b2)) {
-						// Collision d'un bloc venant de la gauche vers la droite
-						if (delta.data[0] > 0) {
-							float l = b2.position.data[0] - b2.size.data[0]/2;
-							float r = b1.position.data[0] + b1.size.data[0]/2;
-							float dist = r - l;
-							this->position->data[0] -= dist;
-							this->delta.data[0] -= dist;
-						}
-						// Collision d'un bloc venant de la droite vers la gauche
-						if (delta.data[0] < 0) {
-							float l = b1.position.data[0] - b1.size.data[0] / 2;
-							float r = b2.position.data[0] + b2.size.data[0] / 2;
-							float dist = l - r;
-							this->position->data[0] -= dist;
-							this->delta.data[0] -= dist;
-						}
+				// Gestion collision x
+				this->redoX();
+				b1.setPosition(*this->pos);
+				if (b1.collide(b2)) {
+					// Collision d'un bloc venant de la gauche vers la droite
+					if (delta.data[0] > 0) {
+						float l = b2.position.data[0] - b2.size.data[0] / 2;
+						float r = b1.position.data[0] + b1.size.data[0] / 2;
+						float dist = r - l;
+						this->pos->data[0] -= dist;
+						this->delta.data[0] -= dist;
 					}
-
-
-					// Gestion collision y
-					this->redoY();
-					b1.position = *this->pos;
-					if (b1.collide(b2)) {
-						// Collision d'un bloc venant de la gauche vers la droite
-						if (delta.data[1] > 0) {
-							float l = b2.position.data[1] - b2.size.data[1] / 2;
-							float r = b1.position.data[1] + b1.size.data[1] / 2;
-							float dist = r - l;
-							this->position->data[1] -= dist;
-							this->delta.data[1] -= dist;
-						}
-						// Collision d'un bloc venant de la droite vers la gauche
-						if (delta.data[1] < 0) {
-							float l = b1.position.data[1] - b1.size.data[1] / 2;
-							float r = b2.position.data[1] + b2.size.data[1] / 2;
-							float dist = l - r;
-							this->position->data[1] -= dist;
-							this->delta.data[1] -= dist;
-						}
+					// Collision d'un bloc venant de la droite vers la gauche
+					if (delta.data[0] < 0) {
+						float l = b1.position.data[0] - b1.size.data[0] / 2;
+						float r = b2.position.data[0] + b2.size.data[0] / 2;
+						float dist = l - r;
+						this->pos->data[0] -= dist;
+						this->delta.data[0] -= dist;
 					}
+					this->vel.data[0] = 0;
+				}
 
-					// Gestion collision z
-					this->redoZ();
-					b1.position = *this->pos;
-					if (b1.collide(b2)) {
-						// Collision d'un bloc venant de la gauche vers la droite
-						if (delta.data[2] > 0) {
-							float l = b2.position.data[2] - b2.size.data[2] / 2;
-							float r = b1.position.data[2] + b1.size.data[2] / 2;
-							float dist = r - l;
-							this->position->data[2] -= dist;
-							this->delta.data[2] -= dist;
-						}
-						// Collision d'un bloc venant de la droite vers la gauche
-						if (delta.data[2] < 0) {
-							float l = b1.position.data[2] - b1.size.data[2] / 2;
-							float r = b2.position.data[2] + b2.size.data[2] / 2;
-							float dist = l - r;
-							this->position->data[2] -= dist;
-							this->delta.data[2] -= dist;
-						}
+				// Gestion collision y
+				this->redoY();
+				b1.setPosition(*this->pos);
+				if (b1.collide(b2)) {
+					// Collision d'un bloc venant de la gauche vers la droite
+					if (delta.data[1] > 0) {
+						float l = b2.position.data[1] - b2.size.data[1] / 2;
+						float r = b1.position.data[1] + b1.size.data[1] / 2;
+						float dist = r - l;
+						this->pos->data[1] -= dist;
+						this->delta.data[1] -= dist;
 					}
-				};
-				bundle.collide(hitbox, func);
-			}
+					// Collision d'un bloc venant de la droite vers la gauche
+					if (delta.data[1] < 0) {
+						float l = b1.position.data[1] - b1.size.data[1] / 2;
+						float r = b2.position.data[1] + b2.size.data[1] / 2;
+						float dist = l - r;
+						this->pos->data[1] -= dist;
+						this->delta.data[1] -= dist;
+					}
+					this->vel.data[1] = 0;
+				}
 
+				// Gestion collision z
+				this->redoZ();
+				b1.setPosition(*this->pos);
+				if (b1.collide(b2)) {
+					// Collision d'un bloc venant de la gauche vers la droite
+					if (delta.data[2] > 0) {
+						float l = b2.position.data[2] - b2.size.data[2] / 2;
+						float r = b1.position.data[2] + b1.size.data[2] / 2;
+						float dist = r - l;
+						this->pos->data[2] -= dist;
+						this->delta.data[2] -= dist;
+					}
+					// Collision d'un bloc venant de la droite vers la gauche
+					if (delta.data[2] < 0) {
+						float l = b1.position.data[2] - b1.size.data[2] / 2;
+						float r = b2.position.data[2] + b2.size.data[2] / 2;
+						float dist = l - r;
+						this->pos->data[2] -= dist;
+						this->delta.data[2] -= dist;
+					}
+					this->vel.data[2] = 0;
+				}
+				b1.setPosition(*this->pos);
+			};
+			bundle.collide(hitbox, func);
+
+		}
+		void update(float dt, Hitbox::Cylinder hitbox, Hitbox::HitboxBundle bundle) {
+			update(dt);
+			hitbox.setPosition(*pos);
 			// Gestion Cylindre
 
-			if constexpr (T == Hitbox::Cylinder) {
-				std::function<void(Cylinder, Box)> funcBox = [this, dt](Hitbox::Cylinder c, Hitbox::Box b) {
-					this->reverseDelta();
 
-					// Gestion collision x
-					this->redoX();
-					c.position = *this->pos;
-					if (c.collide(b)) {
-						// Collision d'un bloc venant de la gauche vers la droite
-						if (delta.data[0] > 0) {
-							float l = b.position.data[0] - b.size.data[0] / 2;
-							float r = c.position.data[0] + radius;
-							float dist = r - l;
-							this->position->data[0] -= dist;
-							this->delta.data[0] -= dist;
-						}
-						// Collision d'un bloc venant de la droite vers la gauche
-						if (delta.data[0] < 0) {
-							float l = c.position.data[0] - radius;
-							float r = b.position.data[0] + b.size.data[0] / 2;
-							float dist = l - r;
-							this->position->data[0] -= dist;
-							this->delta.data[0] -= dist;
-						}
+			std::function<void(Hitbox::Cylinder, Hitbox::Box)> funcBox = [this, dt](Hitbox::Cylinder c, Hitbox::Box b) {
+				this->reverseDelta();
+				// Gestion collision x
+				this->redoX();
+				c.setPosition(*this->pos);
+				if (c.collide(b)) {
+					// Collision d'un bloc venant de la gauche vers la droite
+					if (delta.data[0] > 0) {
+						float l = b.position.data[0] - b.size.data[0] / 2;
+						float r = c.position.data[0] + c.radius;
+						float dist = r - l;
+						this->pos->data[0] -= dist;
+						this->delta.data[0] -= dist;
 					}
-
-
-					// Gestion collision y
-					this->redoY();
-					c.position = *this->pos;
-					if (c.collide(b)) {
-						// Collision d'un bloc venant de la gauche vers la droite
-						if (delta.data[1] > 0) {
-							float l = b.position.data[1] - b.size.data[1] / 2;
-							float r = c.position.data[1] + height/2;
-							float dist = r - l;
-							this->position->data[1] -= dist;
-							this->delta.data[1] -= dist;
-						}
-						// Collision d'un bloc venant de la droite vers la gauche
-						if (delta.data[1] < 0) {
-							float l = c.position.data[1] - height/2;
-							float r = b.position.data[1] + b.size.data[1] / 2;
-							float dist = l - r;
-							this->position->data[1] -= dist;
-							this->delta.data[1] -= dist;
-						}
+					// Collision d'un bloc venant de la droite vers la gauche
+					if (delta.data[0] < 0) {
+						float l = c.position.data[0] - c.radius;
+						float r = b.position.data[0] + b.size.data[0] / 2;
+						float dist = l - r;
+						this->pos->data[0] -= dist;
+						this->delta.data[0] -= dist;
 					}
+					this->vel.data[0] = 0;
+				}
 
-					// Gestion collision z
-					this->redoZ();
-					c.position = *this->pos;
-					if (c.collide(b)) {
-						// Collision d'un bloc venant de la gauche vers la droite
-						if (delta.data[2] > 0) {
-							float l = b.position.data[2] - b.size.data[2] / 2;
-							float r = c.position.data[2] + c.size.data[2] / 2;
-							float dist = r - l;
-							this->position->data[2] -= dist;
-							this->delta.data[2] -= dist;
-						}
-						// Collision d'un bloc venant de la droite vers la gauche
-						if (delta.data[2] < 0) {
-							float l = c.position.data[2] - c.size.data[2] / 2;
-							float r = b.position.data[2] + b.size.data[2] / 2;
-							float dist = l - r;
-							this->position->data[2] -= dist;
-							this->delta.data[2] -= dist;
-						}
+
+				// Gestion collision y
+				this->redoY();
+				c.setPosition(*this->pos);
+				if (c.collide(b)) {
+					// Collision d'un bloc venant du bas vers le haut
+					if (delta.data[1] > 0) {
+						float l = b.position.data[1] - b.size.data[1] / 2;
+						float r = c.position.data[1] + c.height / 2;
+						float dist = r - l;
+						this->pos->data[1] -= dist;
+						this->delta.data[1] -= dist;
+						this->vel.data[1] = 0;
 					}
-				};
-
-				std::function<void(Cylinder, Cylinder)> funcCylinder = [this, dt](Hitbox::Cylinder c1, Hitbox::Cylinder c2) {
-					this->reverseDelta();
-
-					// Gestion collision y
-					this->redoY();
-					c1.position = *this->pos;
-					if (c1.collide(c2)) {
-						// Collision d'un bloc venant de la gauche vers la droite
-						if (delta.data[1] > 0) {
-							float l = c2.position.data[1] - c2.size.data[1] / 2;
-							float r = c1.position.data[1] + height / 2;
-							float dist = r - l;
-							this->position->data[1] -= dist;
-							this->delta.data[1] -= dist;
-						}
-						// Collision d'un bloc venant de la droite vers la gauche
-						if (delta.data[1] < 0) {
-							float l = c1.position.data[1] - height / 2;
-							float r = c2.position.data[1] + c2.size.data[1] / 2;
-							float dist = l - r;
-							this->position->data[1] -= dist;
-							this->delta.data[1] -= dist;
-						}
-					}
-
-					// Gestion collision x & z
-					this->redoX();
-					this->redoZ();
-					if (c1.collide(c2)) {
-						Matrix::Vec<3> dir = c2.position - c1.position;
-						dir.data[1] = 0;
-						dir.normalize();
-						Vec<3> res1 = c1.position + dir;
-						Vec<3> res2 = c2.position - dir;
-						res1.data[1] = 0;
-						res2.data[1] = 0;
-						Vec<3> res3 = res2 - res1;
-						this->position += res3;
-						this->delta += res3;
+					// Collision d'un bloc venant du haut vers le bas
+					if (delta.data[1] < 0) {
+						float l = c.position.data[1] - c.height / 2;
+						float r = b.position.data[1] + b.size.data[1] / 2;
+						float dist = l - r;
+						this->pos->data[1] -= dist;
+						this->delta.data[1] -= dist;
+						this->vel.data[1] = 0;
 					}
 				}
-				bundle.collide(hitbox, funcBox, funcCylinder);
-			}
+
+				// Gestion collision z
+				this->redoZ();
+				c.setPosition(*this->pos);
+				if (c.collide(b)) {
+					// Collision d'un bloc venant de la gauche vers la droite
+					if (delta.data[2] > 0) {
+						float l = b.position.data[2] - b.size.data[2] / 2;
+						float r = c.position.data[2] + c.radius;
+						float dist = r - l;
+						this->pos->data[2] -= dist;
+						this->delta.data[2] -= dist;
+					}
+					// Collision d'un bloc venant de la droite vers la gauche
+					if (delta.data[2] < 0) {
+						float l = c.position.data[2] - c.radius;
+						float r = b.position.data[2] + b.size.data[2] / 2;
+						float dist = l - r;
+						this->pos->data[2] -= dist;
+						this->delta.data[2] -= dist;
+					}
+					this->vel.data[2] = 0;
+				}
+				c.setPosition(*this->pos);
+			};
+
+			std::function<void(Hitbox::Cylinder, Hitbox::Cylinder)> funcCylinder = [this, dt](Hitbox::Cylinder c1, Hitbox::Cylinder c2) {
+				this->reverseDelta();
+
+				// Gestion collision y
+				this->redoY();
+				c1.setPosition(*this->pos);
+				if (c1.collide(c2)) {
+					// Collision d'un bloc venant de la gauche vers la droite
+					if (delta.data[1] > 0) {
+						float l = c2.position.data[1] - c2.height / 2;
+						float r = c1.position.data[1] + c1.height / 2;
+						float dist = r - l;
+						this->pos->data[1] -= dist;
+						this->delta.data[1] -= dist;
+					}
+					// Collision d'un bloc venant de la droite vers la gauche
+					if (delta.data[1] < 0) {
+						float l = c1.position.data[1] - c1.height / 2;
+						float r = c2.position.data[1] + c2.height / 2;
+						float dist = l - r;
+						this->pos->data[1] -= dist;
+						this->delta.data[1] -= dist;
+					}
+					this->vel.data[2] = 0;
+				}
+
+				// Gestion collision x & z
+				this->redoX();
+				this->redoZ();
+				c1.setPosition(*this->pos);
+				if (c1.collide(c2)) {
+					Matrix::Vec<3> dir = c2.position - c1.position;
+					dir.data[1] = 0;
+					dir.normalize();
+					Matrix::Vec<3> res1 = c1.position + dir;
+					Matrix::Vec<3> res2 = c2.position - dir;
+					res1.data[1] = 0;
+					res2.data[1] = 0;
+					Matrix::Vec<3> res3 = res2 - res1;
+					*this->pos += res3;
+					this->delta += res3;
+				}
+				c1.setPosition(*this->pos);
+
+			};
+			bundle.collide(hitbox, funcBox, funcCylinder);
+
 		}
 	};
 }

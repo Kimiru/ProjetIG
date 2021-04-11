@@ -44,6 +44,9 @@ namespace Matrix {
 				it++;
 				index++;
 			}
+			while (index < N) {
+				data[index++] = 0;
+			}
 		}
 
 		/// <summary>
@@ -168,7 +171,7 @@ namespace Matrix {
 		}
 
 
-		/** 
+		/**
 			Return the vector with the minimum value of both vector
 		**/
 		Vec<N> operator<(Vec<N> v) {
@@ -191,7 +194,7 @@ namespace Matrix {
 		}
 
 
-		/** 
+		/**
 			Return the vector with opposite value of each data.
 		**/
 		Vec<N> operator-() {
@@ -203,7 +206,7 @@ namespace Matrix {
 		}
 
 		/**
-			 
+
 		**/
 		Vec<N> abs() {
 			Vec<N> res;
@@ -222,7 +225,7 @@ namespace Matrix {
 		}
 
 
-		/** 
+		/**
 			Multiply 2 vectors
 		**/
 		Vec<N> multiply(Vec<N> v) {

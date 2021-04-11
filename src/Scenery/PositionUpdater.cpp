@@ -6,11 +6,11 @@
 * delta = vel*dt + acc*dt + min(vel*mindrag, mindrag)*dt
 */
 void Scenery::PositionUpdater::computeDelta(float dt) {
-	delta = vel * dt + acc * (1 / 2 * dt*dt);
+	delta = vel * dt + acc * (1 / 2 * dt * dt);
 
 	Matrix::Vec<3> absVel = vel.abs();
 	Matrix::Vec<3> min = (absVel.multiply(drag) < minDrag) < absVel;
-	Matrix::Vec<3> resDrag = min.multiply(-vel.sign())*dt;
+	Matrix::Vec<3> resDrag = min.multiply(-vel.sign()) * dt;
 
 	vel += acc * dt + resDrag;
 }
@@ -22,8 +22,7 @@ void Scenery::PositionUpdater::computeDelta(float dt) {
 void Scenery::PositionUpdater::applyDelta() {
 	// save the last position
 	lastPos = *pos;
-
-	*pos += ((Matrix::Vec<4>)delta)<<0;
+	*pos += delta;
 }
 
 /**

@@ -1,4 +1,4 @@
-#include <Scenery/Vertex.hpp>
+#include "Scenery/Vertex.hpp"
 
 Vec<3> Scenery::Vertex::operator>>(Vertex v)
 {
