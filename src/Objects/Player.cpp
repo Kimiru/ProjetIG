@@ -554,12 +554,18 @@ void Player::updatePos(float dt)
 
 	Hitbox::HitboxBundle bundle;
 
-	for (Island i : *islands) bundle += i.bundle;
+	for (Island &i : *islands) bundle += i.bundle;
 	positionUpdater.update(dt, hitbox, bundle);
 	hitbox.setPosition(translation);
 	groundHitbox.setPosition(translation);
 	if (positionUpdater.vel.data[1] <= 0 && bundle.collide(groundHitbox)) {
 		canJump = 2;
+	}
+	
+	dir = leader - translation;
+	if (dir.length() > .25) {
+		dir *= 0.5;
+		leader += dir;
 	}
 
 }

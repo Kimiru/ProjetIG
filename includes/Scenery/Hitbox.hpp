@@ -76,6 +76,11 @@ namespace Hitbox {
 		Cylinder* foundCylinder;
 		Box* foundBox;
 
+		HitboxBundle() {
+			foundBox = NULL;
+			foundCylinder = NULL;
+		}
+
 		HitboxBundle operator+(HitboxBundle bundle) {
 			HitboxBundle res;
 			for (Box* b : boxes) res.add(b);

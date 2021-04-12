@@ -2,8 +2,7 @@
 
 #include "Scenery/Object.hpp"
 #include "Scenery/Material.hpp"
-
-namespace Objects {
+#include "Scenery/Hitbox.hpp"
 
 	class Leaves : public Scenery::Object {
 
@@ -40,10 +39,13 @@ namespace Objects {
 
 	public:
 
+		Hitbox::Box hitbox;
+
 		Tree();
 
 		void draw();
 
-	};
 
-}
+
+
+	};

@@ -149,9 +149,10 @@ namespace Scenery {
 					if (delta.data[0] > 0) {
 						float l = b.position.data[0] - b.size.data[0] / 2;
 						float r = c.position.data[0] + c.radius;
-						float dist = r - l;
+						float dist = l - r;
 						this->pos->data[0] -= dist;
 						this->delta.data[0] -= dist;
+						this->vel.data[0] = 0;
 					}
 					// Collision d'un bloc venant de la droite vers la gauche
 					if (delta.data[0] < 0) {
@@ -160,8 +161,8 @@ namespace Scenery {
 						float dist = l - r;
 						this->pos->data[0] -= dist;
 						this->delta.data[0] -= dist;
+						this->vel.data[0] = 0;
 					}
-					this->vel.data[0] = 0;
 				}
 
 
@@ -197,9 +198,10 @@ namespace Scenery {
 					if (delta.data[2] > 0) {
 						float l = b.position.data[2] - b.size.data[2] / 2;
 						float r = c.position.data[2] + c.radius;
-						float dist = r - l;
+						float dist = l - r;
 						this->pos->data[2] -= dist;
 						this->delta.data[2] -= dist;
+						this->vel.data[2] = 0;
 					}
 					// Collision d'un bloc venant de la droite vers la gauche
 					if (delta.data[2] < 0) {
@@ -208,8 +210,8 @@ namespace Scenery {
 						float dist = l - r;
 						this->pos->data[2] -= dist;
 						this->delta.data[2] -= dist;
+						this->vel.data[2] = 0;
 					}
-					this->vel.data[2] = 0;
 				}
 				c.setPosition(*this->pos);
 			};

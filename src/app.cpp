@@ -2,13 +2,13 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <time.h>
 
 #include <Matrix/Mat.hpp>
 #include <Scenery/Window.hpp>
 #include <Scenery/Material.hpp>
 #include <Scenery/Light.hpp>
 #include <Scenery/Euler.hpp>
-#include <memory>
 #include <Objects/Player.hpp>
 #include <Scenery/Hitbox.hpp>
 #include <Objects/Island.hpp>
@@ -54,8 +54,8 @@ void draw() {
 	l.use(); // use light
 
 	island.render();
-
 	player.render();
+
 	player.groundHitbox.draw();
 	island.baseBox.draw();
 
@@ -68,12 +68,13 @@ void draw() {
 }
 
 int main(int argc, char** argv) {
+	srand(time(NULL));
 	player.islands = &islands;
 	player.translation.data[1] = 1;
 	islands.push_back(island);
 	l.diffuse(1.0f, 1.0f, 1.0f, 1.0f).position(-10.0f, .0f, 0.0f);
 	l.specular(1.0f, 1.0f, 1.0f, 1.0f);
-
+	
 	Window::create(argc, argv, 900, 600, "Test");
 	Window::drawFunc(draw);
 	Window::updateFunc(update);

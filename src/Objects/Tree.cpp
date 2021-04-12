@@ -2,17 +2,17 @@
 
 #include <iostream>
 
-Objects::Leaves::Leaves() {
+Leaves::Leaves() {
 	this->material = &mater;
 	mater.diffuse(58.0f / 256.0f, 95.0f / 256.0f, 11.0f / 256.0f, 1.0f);
 }
 
-Objects::Trunk::Trunk() {
+Trunk::Trunk() {
 	material = &mater;
 	mater.diffuse(0.519f, 0.367f, 0.257f, 1.0);
 }
 
-Objects::Tree::Tree()
+Tree::Tree()
 {
 	trunk.translation.data[1] = .75f;
 
@@ -32,17 +32,18 @@ Objects::Tree::Tree()
 	add(&leaves);
 }
 
-void Objects::Tree::draw()
+void Tree::draw()
 {
+	std::cout << "cc\n";
 }
 
-void Objects::Leaves::draw()
+void Leaves::draw()
 {
 	glutSolidCube(1);
 }
 
 
-void Objects::Trunk::draw()
+void Trunk::draw()
 {
 	glutSolidCube(1);
 }
