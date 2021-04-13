@@ -20,7 +20,7 @@ public:
 
 	AnimatorBundle idle;
 	Animator idleAnimators[4];
-	std::vector<Island>* islands = NULL;
+	std::vector<Island*>* islands = NULL;
 	PositionUpdater positionUpdater;
 	Hitbox::Cylinder hitbox, groundHitbox;
 	int canJump = 2;
@@ -29,7 +29,7 @@ public:
 	Vec<3> camera = Vec<3>({ 0, 1, 1 });
 	Vec<3> leader = Vec<3>({ 0, 0, 0.001 });
 
-	const float speed = 2;
+	const float speed = 4;
 
 	Player();
 	~Player() { delete material; }

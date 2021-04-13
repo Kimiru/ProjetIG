@@ -12,17 +12,24 @@ public:
 	Hitbox::Box baseBox;
 	Tree* trees = NULL;
 
+	static int index;
+
 	Island(Matrix::Vec<3> position, Matrix::Vec<2> dimension) {
-		int nbrTree = dimension[0] * dimension[1] / 4;
+
+		int nbrTree = dimension[0] * dimension[1] / 10;
+		if (!index)
+			nbrTree = 0;
+		index++;
 		trees = new Tree[nbrTree];
 		for (int i = 0; i < nbrTree; i++) {
-			Tree &tree = trees[i];
-			float ranX = (float)(rand()%10000)/10000 * dimension[0] - 0.5 * dimension[0];
-			float ranZ = (float)(rand()%10000)/10000 * dimension[1] - 0.5 * dimension[1];
-			tree.translation.set({ranX,0, ranZ });
+			Tree& tree = trees[i];
+			float ranX = (float)(rand() % 10000) / 10000 * dimension[0] - 0.5 * dimension[0];
+			float ranZ = (float)(rand() % 10000) / 10000 * dimension[1] - 0.5 * dimension[1];
+			ranX = ranZ = 1;
+			tree.translation.set({ ranX,0, ranZ });
 			tree.hitbox.anchorY = Hitbox::Anchor::BOTTOM;
-			tree.hitbox.size.set({0.5, 1.5, 0.5});
-			tree.hitbox.setPosition(Matrix::Vec<3>({ position[0] + ranX, position[1], position[2] + ranZ}));
+			tree.hitbox.size.set({ 0.5, 1.5, 0.5 });
+			tree.hitbox.setPosition(Matrix::Vec<3>({ position[0] + ranX, position[1], position[2] + ranZ }));
 			bundle.add(&tree.hitbox);
 			add(&trees[i]);
 		}

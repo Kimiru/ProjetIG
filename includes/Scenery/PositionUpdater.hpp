@@ -73,7 +73,7 @@ namespace Scenery {
 						this->delta.data[0] -= dist;
 					}
 					// Collision d'un bloc venant de la droite vers la gauche
-					if (delta.data[0] < 0) {
+					else if (delta.data[0] < 0) {
 						float l = b1.position.data[0] - b1.size.data[0] / 2;
 						float r = b2.position.data[0] + b2.size.data[0] / 2;
 						float dist = l - r;
@@ -96,7 +96,7 @@ namespace Scenery {
 						this->delta.data[1] -= dist;
 					}
 					// Collision d'un bloc venant de la droite vers la gauche
-					if (delta.data[1] < 0) {
+					else if (delta.data[1] < 0) {
 						float l = b1.position.data[1] - b1.size.data[1] / 2;
 						float r = b2.position.data[1] + b2.size.data[1] / 2;
 						float dist = l - r;
@@ -119,7 +119,7 @@ namespace Scenery {
 						this->delta.data[2] -= dist;
 					}
 					// Collision d'un bloc venant de la droite vers la gauche
-					if (delta.data[2] < 0) {
+					else if (delta.data[2] < 0) {
 						float l = b1.position.data[2] - b1.size.data[2] / 2;
 						float r = b2.position.data[2] + b2.size.data[2] / 2;
 						float dist = l - r;
@@ -150,12 +150,12 @@ namespace Scenery {
 						float l = b.position.data[0] - b.size.data[0] / 2;
 						float r = c.position.data[0] + c.radius;
 						float dist = l - r;
-						this->pos->data[0] -= dist;
-						this->delta.data[0] -= dist;
+						this->pos->data[0] += dist;
+						this->delta.data[0] += dist;
 						this->vel.data[0] = 0;
 					}
 					// Collision d'un bloc venant de la droite vers la gauche
-					if (delta.data[0] < 0) {
+					else if (delta.data[0] < 0) {
 						float l = c.position.data[0] - c.radius;
 						float r = b.position.data[0] + b.size.data[0] / 2;
 						float dist = l - r;
@@ -174,13 +174,13 @@ namespace Scenery {
 					if (delta.data[1] > 0) {
 						float l = b.position.data[1] - b.size.data[1] / 2;
 						float r = c.position.data[1] + c.height / 2;
-						float dist = r - l;
-						this->pos->data[1] -= dist;
-						this->delta.data[1] -= dist;
+						float dist = l - r;
+						this->pos->data[1] += dist;
+						this->delta.data[1] += dist;
 						this->vel.data[1] = 0;
 					}
 					// Collision d'un bloc venant du haut vers le bas
-					if (delta.data[1] < 0) {
+					else if (delta.data[1] < 0) {
 						float l = c.position.data[1] - c.height / 2;
 						float r = b.position.data[1] + b.size.data[1] / 2;
 						float dist = l - r;
@@ -199,12 +199,12 @@ namespace Scenery {
 						float l = b.position.data[2] - b.size.data[2] / 2;
 						float r = c.position.data[2] + c.radius;
 						float dist = l - r;
-						this->pos->data[2] -= dist;
-						this->delta.data[2] -= dist;
+						this->pos->data[2] += dist;
+						this->delta.data[2] += dist;
 						this->vel.data[2] = 0;
 					}
 					// Collision d'un bloc venant de la droite vers la gauche
-					if (delta.data[2] < 0) {
+					else if (delta.data[2] < 0) {
 						float l = c.position.data[2] - c.radius;
 						float r = b.position.data[2] + b.size.data[2] / 2;
 						float dist = l - r;
@@ -227,12 +227,12 @@ namespace Scenery {
 					if (delta.data[1] > 0) {
 						float l = c2.position.data[1] - c2.height / 2;
 						float r = c1.position.data[1] + c1.height / 2;
-						float dist = r - l;
-						this->pos->data[1] -= dist;
-						this->delta.data[1] -= dist;
+						float dist = l - r;
+						this->pos->data[1] += dist;
+						this->delta.data[1] += dist;
 					}
 					// Collision d'un bloc venant de la droite vers la gauche
-					if (delta.data[1] < 0) {
+					else if (delta.data[1] < 0) {
 						float l = c1.position.data[1] - c1.height / 2;
 						float r = c2.position.data[1] + c2.height / 2;
 						float dist = l - r;
@@ -262,7 +262,6 @@ namespace Scenery {
 
 			};
 			bundle.collide(hitbox, funcBox, funcCylinder);
-
 		}
 	};
 }

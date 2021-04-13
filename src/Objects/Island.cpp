@@ -1,5 +1,7 @@
 #include <Objects\Island.hpp>
 
+int Island::index = 0;
+
 void Island::draw()
 {
 	glPushMatrix();

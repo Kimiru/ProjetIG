@@ -28,13 +28,11 @@ Tree::Tree()
 	leaves.scale[1] = 2;
 	leaves.scale[2] = 2;
 
-
 	add(&leaves);
 }
 
 void Tree::draw()
 {
-	std::cout << "cc\n";
 }
 
 void Leaves::draw()

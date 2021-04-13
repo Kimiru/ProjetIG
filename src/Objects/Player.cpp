@@ -4,7 +4,7 @@ Player::Player()
 {
 	positionUpdater.pos = &translation;
 	hitbox.anchorY = Hitbox::Anchor::BOTTOM;
-	hitbox.radius = .5;
+	hitbox.radius = .3;
 	hitbox.height = 1.2;
 
 	groundHitbox.anchorY = Hitbox::Anchor::TOP;
@@ -494,7 +494,7 @@ void Player::checkInput(float dt)
 	}
 
 	if (canJump && Window::getKeySingle(' ')) {
-		positionUpdater.vel.data[1] += 2;
+		positionUpdater.vel.data[1] = 4;
 		canJump--;
 	}
 
@@ -540,7 +540,7 @@ void Player::updatePos(float dt)
 	const float tolerence = .1;
 
 	positionUpdater.vel.set({ 0, positionUpdater.vel.data[1], 0 });
-	positionUpdater.acc.data[1] = -5;
+	positionUpdater.acc.data[1] = -10;
 	Vec<3> dir = leader - translation;
 	dir.data[1] = 0;
 
@@ -553,17 +553,19 @@ void Player::updatePos(float dt)
 
 
 	Hitbox::HitboxBundle bundle;
-
-	for (Island &i : *islands) bundle += i.bundle;
+	if (islands != NULL)
+		for (Island* i : *islands) bundle += i->bundle;
 	positionUpdater.update(dt, hitbox, bundle);
 	hitbox.setPosition(translation);
 	groundHitbox.setPosition(translation);
 	if (positionUpdater.vel.data[1] <= 0 && bundle.collide(groundHitbox)) {
 		canJump = 2;
 	}
-	
-	dir = leader - translation;
-	if (dir.length() > .25) {
+
+
+	dir = translation - leader;
+	dir.data[1] = 0;
+	if (dir.length() > .1 * speed) {
 		dir *= 0.5;
 		leader += dir;
 	}

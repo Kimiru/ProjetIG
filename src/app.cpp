@@ -19,7 +19,8 @@ using namespace Scenery;
 static float angle = 0;
 static Light l;
 
-std::vector<Island> islands;
+
+std::vector<Island*> islands;
 
 
 Player player;
@@ -69,12 +70,13 @@ void draw() {
 
 int main(int argc, char** argv) {
 	srand(time(NULL));
+
 	player.islands = &islands;
 	player.translation.data[1] = 1;
-	islands.push_back(island);
+	islands.push_back(&island);
 	l.diffuse(1.0f, 1.0f, 1.0f, 1.0f).position(-10.0f, .0f, 0.0f);
 	l.specular(1.0f, 1.0f, 1.0f, 1.0f);
-	
+
 	Window::create(argc, argv, 900, 600, "Test");
 	Window::drawFunc(draw);
 	Window::updateFunc(update);
