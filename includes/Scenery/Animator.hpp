@@ -29,6 +29,7 @@ namespace Scenery {
 		bool pingpong = false;
 		float* ref = NULL, time = 0, end = 1;
 		float value = 0;
+		float offset = 0;
 
 		UpdateMethode methode = UpdateMethode::VALUE;
 

@@ -25,10 +25,30 @@ std::vector<Island*> islands;
 
 Player player;
 
-Island island = Island({ 0, 0, 0 }, { 5, 5 });
+Island* island = NULL;
+
+void init() {
+	Island::index = 0;
+	player.translation.set({ 0, 1, 0 });
+	player.positionUpdater.vel.set({ 0, 0, 0 });
+	player.positionUpdater.acc.set({ 0, 0, 0 });
+	player.camera.set({ 0, 5, 5 });
+	island = new  Island({ 0, 0, 0 }, { 5, 5 }, &islands);
+	islands.push_back(island);
+}
+
+void _delete() {
+	while (islands.size())
+		(*islands.begin())->kill();
+}
+
+float rng() {
+	return (float)(rand() % 100) / 100;
+}
 
 void update(float dt) {
 	if (Window::getKey(0x1B)) {
+
 		exit(0);
 	}
 
@@ -38,7 +58,46 @@ void update(float dt) {
 
 	l.position(cos(angle) * 10, 2, sin(angle) * 10);
 
+	auto it = islands.begin();
+	while (it != islands.end()) {
+		(*it)->update(dt);
+
+		if ((*it)->spawning && (*it)->spawstate == 1 && !(*it)->enteredBox && player.hitbox.collide((*it)->enterBox)) {
+			(*it)->enteredBox = true;
+			if ((*it)->prev != NULL)
+				(*it)->prev->spawning = false;
+			Matrix::Vec<2> size = Matrix::Vec<2>({ rng() * 4 + 3 , rng() * 4 + 3 });
+			float angle = rng() * M_PI * 2;
+			float len = (size / 2).length() + ((*it)->size / 2).length();
+			float x = sin(angle) * len;
+			float z = cos(angle) * len;
+			Matrix::Vec<3> pos = Matrix::Vec<3>({ (*it)->translation[0] + x, (*it)->translation[1] + rng() * 2 - 1,(*it)->translation[2] + z });
+
+			Island* i = new Island(pos, size, &islands);
+			(*it)->next = i;
+			i->prev = (*it);
+			islands.push_back(i);
+			break;
+		}
+		it++;
+	}
+
+	it = islands.begin();
+	while (it != islands.end())
+		if ((*it)->toFree) {
+			(*it)->kill();
+
+			break;
+		}
+		else it++;
+
 	player.update(dt);
+
+	if (player.positionUpdater.vel.data[1] < -20) {
+		_delete();
+		init();
+	}
+
 	glutPostRedisplay();
 }
 
@@ -54,11 +113,15 @@ void draw() {
 
 	l.use(); // use light
 
-	island.render();
+
+	auto it = islands.begin();
+	while (it != islands.end()) {
+		(*it)->enterBox.draw();
+		(*it++)->render();
+	}
 	player.render();
 
 	player.groundHitbox.draw();
-	island.baseBox.draw();
 
 	glPopMatrix();
 	glFlush();
@@ -71,9 +134,11 @@ void draw() {
 int main(int argc, char** argv) {
 	srand(time(NULL));
 
+	init();
+
 	player.islands = &islands;
-	player.translation.data[1] = 1;
-	islands.push_back(&island);
+
+
 	l.diffuse(1.0f, 1.0f, 1.0f, 1.0f).position(-10.0f, .0f, 0.0f);
 	l.specular(1.0f, 1.0f, 1.0f, 1.0f);
 

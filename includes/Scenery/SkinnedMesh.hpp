@@ -37,6 +37,8 @@ namespace Scenery {
 				boneScale[index++] = *it++;
 		}
 
+		void reset();
+
 	};
 
 	class Skeleton : public Object {
@@ -55,6 +57,7 @@ namespace Scenery {
 
 		void build();
 		void save();
+		void reset();
 	};
 
 	class SkinnedMesh : public Object {

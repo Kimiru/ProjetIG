@@ -3,6 +3,9 @@
 void Scenery::Animator::setTime(float newTime)
 {
 	time = newTime;
+	if (loop && !pingpong && offset != 0) {
+		time = fmod(time + offset, end);
+	}
 
 	int key = getCurrentTimeKey();
 	float time = getCurrentTime();
@@ -77,7 +80,7 @@ int Scenery::Animator::getCurrentTimeKey()
 	int res = timekey.begin()->first;
 
 	for (auto it : timekey)
-		if (time >= it.second && time < timekey[res])
+		if (time >= it.second || time < timekey[res])
 			res = it.first;
 
 	return res;

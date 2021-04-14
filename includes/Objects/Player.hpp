@@ -20,6 +20,9 @@ public:
 
 	AnimatorBundle idle;
 	Animator idleAnimators[4];
+	AnimatorBundle walk;
+	Animator walkAnimators[8];
+
 	std::vector<Island*>* islands = NULL;
 	PositionUpdater positionUpdater;
 	Hitbox::Cylinder hitbox, groundHitbox;

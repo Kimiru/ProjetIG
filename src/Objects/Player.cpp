@@ -400,10 +400,11 @@ Player::Player()
 		material->diffuse(.3, 0, 0, 1.0).ambiant(1, 0, 0, 1).front();
 	}
 
-	// c1.right > c2.left && c1.left < c2.right
-	// idle animation
-	{
-		idle.end = true;
+
+
+	{ // idle animation
+
+		idle.end = 1;
 		idle.loop = true;
 		idle.pingpong = true;
 		for (int i = 0; i < 4; i++) {
@@ -430,6 +431,66 @@ Player::Player()
 
 	}
 
+	{// walk animation
+
+		walk.end = 1;
+		walk.loop = true;
+		walk.pingpong = false;
+		for (int i = 0; i < 8; i++) {
+			walk.addAnimator(&walkAnimators[i]);
+			walkAnimators[i].end = 1;
+			walkAnimators[i].loop = true;
+			walkAnimators[i].pingpong = false;
+		}
+
+		// RIGHT LEG
+		walkAnimators[0].byReference();
+		walkAnimators[0].ref = &bones[2].rotation.data[0];
+		walkAnimators[0].addKey(0, 0, bezier(M_PI + M_PI_4, M_PI - M_PI / 3));
+		walkAnimators[0].addKey(1, .5, bezier(M_PI - M_PI / 3, M_PI + M_PI_4));
+		walkAnimators[1].byReference();
+		walkAnimators[1].ref = &bones[3].rotation.data[0];
+		walkAnimators[1].addKey(0, 0, linear(M_PI / 3, M_PI / 3));
+		walkAnimators[1].addKey(1, .3, bezier(M_PI / 3, 0));
+		walkAnimators[1].addKey(2, .6, linear(0, 0));
+		walkAnimators[1].addKey(3, .7, bezier(0, M_PI / 3));
+
+		// LEFT LEG
+		walkAnimators[2].offset = .5;
+		walkAnimators[2].byReference();
+		walkAnimators[2].ref = &bones[4].rotation.data[0];
+		walkAnimators[2].addKey(0, 0, bezier(M_PI + M_PI_4, M_PI - M_PI / 3));
+		walkAnimators[2].addKey(1, .5, bezier(M_PI - M_PI / 3, M_PI + M_PI_4));
+		walkAnimators[3].offset = .5;
+		walkAnimators[3].byReference();
+		walkAnimators[3].ref = &bones[5].rotation.data[0];
+		walkAnimators[3].addKey(0, 0, linear(M_PI / 3, M_PI / 3));
+		walkAnimators[3].addKey(1, .3, bezier(M_PI / 3, 0));
+		walkAnimators[3].addKey(2, .6, linear(0, 0));
+		walkAnimators[3].addKey(3, .7, bezier(0, M_PI / 3));
+
+		// RIGHT ARM
+		walkAnimators[4].methode = UpdateMethode::REF;
+		walkAnimators[4].ref = &bones[6].rotation.data[0];
+		walkAnimators[4].addKey(0, 0, bezier(M_PI_4, -M_PI_4 / 2)); // X
+		walkAnimators[4].addKey(1, .5, bezier(-M_PI_4 / 2, M_PI_4)); // X
+		walkAnimators[5].methode = UpdateMethode::REF;
+		walkAnimators[5].ref = &bones[6].rotation.data[2];
+		walkAnimators[5].addKey(0, 0, linear(M_PI, M_PI)); // Z
+
+		// LEFT ARM
+		walkAnimators[6].methode = UpdateMethode::REF;
+		walkAnimators[6].ref = &bones[8].rotation.data[0];
+		walkAnimators[6].addKey(0, 0, bezier(-M_PI_4 / 2, M_PI_4)); // X
+		walkAnimators[6].addKey(1, .5, bezier(M_PI_4, -M_PI_4 / 2)); // X
+		walkAnimators[7].methode = UpdateMethode::REF;
+		walkAnimators[7].ref = &bones[8].rotation.data[2];
+		walkAnimators[7].addKey(0, 0, linear(-M_PI, -M_PI)); // Z
+
+
+	}
+
+	//idle.play();
 	idle.play();
 
 	displayBones = false;
@@ -439,6 +500,7 @@ Player::Player()
 void Player::update(float dt)
 {
 	idle.update(dt);
+	walk.update(dt);
 
 	build();
 
@@ -454,6 +516,12 @@ void Player::checkInput(float dt)
 	bool _s = Window::getKey('s');
 	bool _d = Window::getKey('d');
 	if (_z || _q || _s || _d) {
+		if (!walk.run) {
+			skeleton.reset();
+			idle.pause();
+			walk.reset();
+			walk.play();
+		}
 		float angle = (camera - translation).angle(2, 0);
 		Vec<3> move;
 
@@ -490,6 +558,14 @@ void Player::checkInput(float dt)
 			move *= speed;
 			leader += move * dt;
 
+		}
+	}
+	else {
+		if (!idle.run) {
+			skeleton.reset();
+			walk.pause();
+			idle.reset();
+			idle.play();
 		}
 	}
 

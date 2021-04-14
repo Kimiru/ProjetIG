@@ -28,6 +28,13 @@ void Scenery::Skeleton::save()
 		inverts.push_back(!bones[i]->transformationMatrix);
 }
 
+void Scenery::Skeleton::reset()
+{
+	for (Bone* bone : bones) {
+		bone->reset();
+	}
+}
+
 void Scenery::Bone::build()
 {
 	rotation.built = false;
@@ -42,6 +49,11 @@ void Scenery::Bone::build()
 		bone->build();
 	}
 
+}
+
+void Scenery::Bone::reset()
+{
+	rotation.reset();
 }
 
 Scenery::SkinnedMesh::SkinnedMesh(
