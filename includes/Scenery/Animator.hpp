@@ -68,4 +68,18 @@ namespace Scenery {
 
 	};
 
+	class AnimationSelector {
+	public:
+		std::vector<AnimatorBundle*> bundles;
+		int running = -1;
+
+		void add(AnimatorBundle* bundle);
+		void play(int animation);
+		void pause();
+		void stop();
+
+		void update(float dt);
+
+	};
+
 }

@@ -2,6 +2,7 @@
 
 Player::Player()
 {
+	bundle = NULL;
 	positionUpdater.pos = &translation;
 	hitbox.anchorY = Hitbox::Anchor::BOTTOM;
 	hitbox.radius = .3;
@@ -490,8 +491,154 @@ Player::Player()
 
 	}
 
-	//idle.play();
-	idle.play();
+	{// jump
+
+		jump.end = .3;
+		jump.loop = false;
+		jump.pingpong = false;
+		for (int i = 0; i < 8; i++) {
+			jump.addAnimator(&jumpAnimators[i]);
+			jumpAnimators[i].end = .3;
+			jumpAnimators[i].loop = false;
+			jumpAnimators[i].pingpong = false;
+		}
+
+		// RIGHT LEG
+		jumpAnimators[0].byReference();
+		jumpAnimators[0].ref = &bones[2].rotation.data[0];
+		jumpAnimators[0].addKey(0, 0, bezier(M_PI, M_PI - M_PI / 3));
+		jumpAnimators[1].byReference();
+		jumpAnimators[1].ref = &bones[3].rotation.data[0];
+		jumpAnimators[1].addKey(0, 0, bezier(0, M_PI / 3));
+
+		// LEFT LEG
+		jumpAnimators[2].byReference();
+		jumpAnimators[2].ref = &bones[4].rotation.data[0];
+		jumpAnimators[2].addKey(0, 0, bezier(M_PI, M_PI + M_PI / 6));
+		jumpAnimators[3].byReference();
+		jumpAnimators[3].ref = &bones[5].rotation.data[0];
+		jumpAnimators[3].addKey(0, 0, linear(0, 0));
+
+		// RIGHT ARM
+		jumpAnimators[4].methode = UpdateMethode::REF;
+		jumpAnimators[4].ref = &bones[6].rotation.data[0];
+		jumpAnimators[4].addKey(0, 0, bezier(0, M_PI_4)); // X
+		jumpAnimators[5].methode = UpdateMethode::REF;
+		jumpAnimators[5].ref = &bones[6].rotation.data[2];
+		jumpAnimators[5].addKey(0, 0, bezier(M_PI, M_PI - M_PI / 6)); // Z
+
+		// LEFT ARM
+		jumpAnimators[6].methode = UpdateMethode::REF;
+		jumpAnimators[6].ref = &bones[8].rotation.data[0];
+		jumpAnimators[6].addKey(0, 0, bezier(0, M_PI_4)); // X
+		jumpAnimators[7].methode = UpdateMethode::REF;
+		jumpAnimators[7].ref = &bones[8].rotation.data[2];
+		jumpAnimators[7].addKey(0, 0, linear(-M_PI, -M_PI + M_PI / 6)); // Z
+
+
+	}
+
+	{// fall
+
+		fall.end = .3;
+		fall.loop = false;
+		fall.pingpong = false;
+		for (int i = 0; i < 8; i++) {
+			fall.addAnimator(&fallAnimators[i]);
+			fallAnimators[i].end = .3;
+			fallAnimators[i].loop = false;
+			fallAnimators[i].pingpong = false;
+		}
+
+		// RIGHT LEG
+		fallAnimators[0].byReference();
+		fallAnimators[0].ref = &bones[2].rotation.data[0];
+		fallAnimators[0].addKey(0, 0, bezier(M_PI, M_PI - M_PI_2));
+		fallAnimators[1].byReference();
+		fallAnimators[1].ref = &bones[3].rotation.data[0];
+		fallAnimators[1].addKey(0, 0, bezier(0, M_PI / 3));
+
+		// LEFT LEG
+		fallAnimators[2].byReference();
+		fallAnimators[2].ref = &bones[4].rotation.data[0];
+		fallAnimators[2].addKey(0, 0, bezier(M_PI, M_PI - M_PI / 6));
+		fallAnimators[3].byReference();
+		fallAnimators[3].ref = &bones[5].rotation.data[0];
+		fallAnimators[3].addKey(0, 0, linear(0, 0));
+
+		// RIGHT ARM
+		fallAnimators[4].methode = UpdateMethode::REF;
+		fallAnimators[4].ref = &bones[6].rotation.data[0];
+		fallAnimators[4].addKey(0, 0, bezier(0, M_PI_4)); // X
+		fallAnimators[5].methode = UpdateMethode::REF;
+		fallAnimators[5].ref = &bones[6].rotation.data[2];
+		fallAnimators[5].addKey(0, 0, bezier(M_PI, M_PI_2)); // Z
+
+		// LEFT ARM
+		fallAnimators[6].methode = UpdateMethode::REF;
+		fallAnimators[6].ref = &bones[8].rotation.data[0];
+		fallAnimators[6].addKey(0, 0, bezier(0, M_PI_4)); // X
+		fallAnimators[7].methode = UpdateMethode::REF;
+		fallAnimators[7].ref = &bones[8].rotation.data[2];
+		fallAnimators[7].addKey(0, 0, linear(-M_PI, -M_PI_2)); // Z
+
+
+	}
+
+	{// jumpfall
+
+		jumpfall.end = .3;
+		jumpfall.loop = false;
+		jumpfall.pingpong = false;
+		for (int i = 0; i < 8; i++) {
+			jumpfall.addAnimator(&jumpfallAnimators[i]);
+			jumpfallAnimators[i].end = .3;
+			jumpfallAnimators[i].loop = false;
+			jumpfallAnimators[i].pingpong = false;
+		}
+
+		// RIGHT LEG
+		jumpfallAnimators[0].byReference();
+		jumpfallAnimators[0].ref = &bones[2].rotation.data[0];
+		jumpfallAnimators[0].addKey(0, 0, bezier(M_PI - M_PI / 3, M_PI - M_PI_2));
+		jumpfallAnimators[1].byReference();
+		jumpfallAnimators[1].ref = &bones[3].rotation.data[0];
+		jumpfallAnimators[1].addKey(0, 0, bezier(M_PI / 3, M_PI / 3));
+
+		// LEFT LEG
+		jumpfallAnimators[2].byReference();
+		jumpfallAnimators[2].ref = &bones[4].rotation.data[0];
+		jumpfallAnimators[2].addKey(0, 0, linear(M_PI + M_PI / 6, M_PI - M_PI / 6));
+		jumpfallAnimators[3].byReference();
+		jumpfallAnimators[3].ref = &bones[5].rotation.data[0];
+		jumpfallAnimators[3].addKey(0, 0, linear(0, 0));
+
+		// RIGHT ARM
+		jumpfallAnimators[4].methode = UpdateMethode::REF;
+		jumpfallAnimators[4].ref = &bones[6].rotation.data[0];
+		jumpfallAnimators[4].addKey(0, 0, linear(M_PI_4, M_PI_4)); // X
+		jumpfallAnimators[5].methode = UpdateMethode::REF;
+		jumpfallAnimators[5].ref = &bones[6].rotation.data[2];
+		jumpfallAnimators[5].addKey(0, 0, linear(M_PI - M_PI / 6, M_PI - M_PI_2)); // Z
+
+		// LEFT ARM
+		jumpfallAnimators[6].methode = UpdateMethode::REF;
+		jumpfallAnimators[6].ref = &bones[8].rotation.data[0];
+		jumpfallAnimators[6].addKey(0, 0, bezier(M_PI_4, M_PI_4)); // X
+		jumpfallAnimators[7].methode = UpdateMethode::REF;
+		jumpfallAnimators[7].ref = &bones[8].rotation.data[2];
+		jumpfallAnimators[7].addKey(0, 0, linear(-M_PI + M_PI / 6, -M_PI + M_PI_2)); // Z
+
+
+	}
+
+	animations.add(&idle);
+	animations.add(&walk);
+	animations.add(&jump);
+	animations.add(&fall);
+	animations.add(&jumpfall);
+
+	animations.play(0);
 
 	displayBones = false;
 
@@ -499,14 +646,22 @@ Player::Player()
 
 void Player::update(float dt)
 {
-	idle.update(dt);
-	walk.update(dt);
+
+	Hitbox::HitboxBundle bundle;
+	if (islands != NULL)
+		for (Island* i : *islands) bundle += i->bundle;
+	this->bundle = &bundle;
+
 
 	build();
+
+	animations.update(dt);
 
 	checkInput(dt);
 	updatePos(dt);
 	updateCam(dt);
+
+	this->bundle = NULL;
 }
 
 void Player::checkInput(float dt)
@@ -516,11 +671,8 @@ void Player::checkInput(float dt)
 	bool _s = Window::getKey('s');
 	bool _d = Window::getKey('d');
 	if (_z || _q || _s || _d) {
-		if (!walk.run) {
-			skeleton.reset();
-			idle.pause();
-			walk.reset();
-			walk.play();
+		if (!walk.run && abs(positionUpdater.vel.data[1]) < .1 && (*bundle).collide(groundHitbox)) {
+			animations.play(1);
 		}
 		float angle = (camera - translation).angle(2, 0);
 		Vec<3> move;
@@ -560,19 +712,28 @@ void Player::checkInput(float dt)
 
 		}
 	}
-	else {
-		if (!idle.run) {
-			skeleton.reset();
-			walk.pause();
-			idle.reset();
-			idle.play();
-		}
+	else if (!idle.run && abs(positionUpdater.vel.data[1]) < .1 && (*bundle).collide(groundHitbox)) {
+		animations.stop();
+		skeleton.reset();
+		animations.play(0);
 	}
 
 	if (canJump && Window::getKeySingle(' ')) {
 		positionUpdater.vel.data[1] = 4;
 		canJump--;
+		animations.stop();
+		animations.play(2);
 	}
+
+	if (!fall.run && !jump.run && !jumpfall.run && positionUpdater.vel.data[1] < -.1) {
+		animations.play(3);
+	}
+
+	if (jump.run && !jumpfall.run && jump.time >= .3 && positionUpdater.vel.data[1] < -.1) {
+		std::cout << "hello\n";
+		animations.play(4);
+	}
+
 
 	if (Window::getSpecial(GLUT_KEY_LEFT)) {
 		float camangle = (camera - translation).angle(2, 0);
@@ -627,14 +788,10 @@ void Player::updatePos(float dt)
 		rotation.y(-dir.angle(2, 0));
 	}
 
-
-	Hitbox::HitboxBundle bundle;
-	if (islands != NULL)
-		for (Island* i : *islands) bundle += i->bundle;
-	positionUpdater.update(dt, hitbox, bundle);
+	positionUpdater.update(dt, hitbox, *bundle);
 	hitbox.setPosition(translation);
 	groundHitbox.setPosition(translation);
-	if (positionUpdater.vel.data[1] <= 0 && bundle.collide(groundHitbox)) {
+	if (positionUpdater.vel.data[1] <= 0 && (*bundle).collide(groundHitbox)) {
 		canJump = 2;
 	}
 

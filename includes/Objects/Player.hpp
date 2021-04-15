@@ -22,11 +22,22 @@ public:
 	Animator idleAnimators[4];
 	AnimatorBundle walk;
 	Animator walkAnimators[8];
+	AnimatorBundle jump;
+	Animator jumpAnimators[8];
+	AnimatorBundle fall;
+	Animator fallAnimators[8];
+	AnimatorBundle jumpfall;
+	Animator jumpfallAnimators[8];
+
+	AnimationSelector animations;
+
+
 
 	std::vector<Island*>* islands = NULL;
 	PositionUpdater positionUpdater;
 	Hitbox::Cylinder hitbox, groundHitbox;
 	int canJump = 2;
+	Hitbox::HitboxBundle* bundle = NULL;
 
 
 	Vec<3> camera = Vec<3>({ 0, 1, 1 });

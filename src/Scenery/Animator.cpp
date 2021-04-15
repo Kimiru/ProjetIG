@@ -169,6 +169,7 @@ void Scenery::AnimatorBundle::pause()
 void Scenery::AnimatorBundle::reset()
 {
 	for (Animator* a : bundle) a->reset();
+	time = 0;
 }
 
 void Scenery::AnimatorBundle::setTime(float value)
@@ -193,4 +194,41 @@ void Scenery::AnimatorBundle::update(float dt)
 
 	setTime(time);
 
+}
+
+void Scenery::AnimationSelector::add(AnimatorBundle* bundle) {
+	bundles.push_back(bundle);
+}
+
+void Scenery::AnimationSelector::play(int animation)
+{
+	if (running != -1 && running != animation) {
+		bundles[running]->pause();
+		bundles[running]->reset();
+	}
+	running = animation;
+	bundles[running]->play();
+}
+
+void Scenery::AnimationSelector::pause()
+{
+	if (running == -1) return;
+
+	bundles[running]->pause();
+}
+
+void Scenery::AnimationSelector::stop()
+{
+	if (running == -1) return;
+
+	bundles[running]->pause();
+	bundles[running]->reset();
+	running = -1;
+}
+
+void Scenery::AnimationSelector::update(float dt)
+{
+	if (running == -1) return;
+
+	bundles[running]->update(dt);
 }
