@@ -30,6 +30,8 @@ void Scenery::PositionUpdater::applyDelta() {
  */
 void Scenery::PositionUpdater::reverseDelta() {
 	*pos = lastPos;
+	*pos -= delta;
+	delta += delta;
 }
 
 /**

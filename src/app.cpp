@@ -47,13 +47,9 @@ float rng() {
 }
 
 void update(float dt) {
-	if (Window::getKey(0x1B)) {
-
+	if (Window::getKey(0x1B))
 		exit(0);
-	}
 
-	if (Window::getKey('a')) {
-	}
 	angle += dt * M_PI_2 / 2;
 
 	l.position(cos(angle) * 10, 2, sin(angle) * 10);
@@ -114,6 +110,7 @@ void draw() {
 	l.use(); // use light
 
 
+
 	auto it = islands.begin();
 	while (it != islands.end()) {
 		(*it)->enterBox.draw();
@@ -142,7 +139,9 @@ int main(int argc, char** argv) {
 	l.diffuse(1.0f, 1.0f, 1.0f, 1.0f).position(-10.0f, .0f, 0.0f);
 	l.specular(1.0f, 1.0f, 1.0f, 1.0f);
 
-	Window::create(argc, argv, 900, 600, "Test");
+	atexit(_delete);
+
+	Window::create(argc, argv, 900, 600, "Island Jumper");
 	Window::drawFunc(draw);
 	Window::updateFunc(update);
 	l.turnOn();
