@@ -1,6 +1,5 @@
 #include <Scenery/Hitbox.hpp>
 
-
 void Hitbox::Box::setPosition(Matrix::Vec<3> pos)
 {
 	switch (anchorX)

@@ -648,9 +648,14 @@ void Player::update(float dt)
 {
 
 	Hitbox::HitboxBundle bundle;
+	Hitbox::HitboxBundle groundbundle;
 	if (islands != NULL)
-		for (Island* i : *islands) bundle += i->bundle;
+		for (Island* i : *islands) {
+			bundle += i->bundle;
+			groundbundle.add(&i->baseBox);
+		}
 	this->bundle = &bundle;
+	this->groundbundle = &groundbundle;
 
 
 	build();
@@ -662,6 +667,7 @@ void Player::update(float dt)
 	updateCam(dt);
 
 	this->bundle = NULL;
+	this->groundbundle = NULL;
 }
 
 void Player::checkInput(float dt)
@@ -671,7 +677,7 @@ void Player::checkInput(float dt)
 	bool _s = Window::getKey('s');
 	bool _d = Window::getKey('d');
 	if (_z || _q || _s || _d) {
-		if (!walk.run && abs(positionUpdater.vel.data[1]) < .1 && (*bundle).collide(groundHitbox)) {
+		if (!walk.run && abs(positionUpdater.vel.data[1]) < .1 && (*groundbundle).collide(groundHitbox)) {
 			animations.play(1);
 		}
 		float angle = (camera - translation).angle(2, 0);
@@ -712,7 +718,7 @@ void Player::checkInput(float dt)
 
 		}
 	}
-	else if (!idle.run && abs(positionUpdater.vel.data[1]) < .1 && (*bundle).collide(groundHitbox)) {
+	else if (!idle.run && abs(positionUpdater.vel.data[1]) < .1 && (*groundbundle).collide(groundHitbox)) {
 		animations.stop();
 		skeleton.reset();
 		animations.play(0);
@@ -730,7 +736,6 @@ void Player::checkInput(float dt)
 	}
 
 	if (jump.run && !jumpfall.run && jump.time >= .3 && positionUpdater.vel.data[1] < -.1) {
-		std::cout << "hello\n";
 		animations.play(4);
 	}
 
@@ -788,10 +793,12 @@ void Player::updatePos(float dt)
 		rotation.y(-dir.angle(2, 0));
 	}
 
-	positionUpdater.update(dt, hitbox, *bundle);
+	positionUpdater.update(dt);
+	positionUpdater.collide(hitbox, *groundbundle, { 0, 1, 0 });
+	positionUpdater.collide(hitbox, *bundle, { 1, 0, 1 });
 	hitbox.setPosition(translation);
 	groundHitbox.setPosition(translation);
-	if (positionUpdater.vel.data[1] <= 0 && (*bundle).collide(groundHitbox)) {
+	if (positionUpdater.vel.data[1] <= 0 && (*groundbundle).collide(groundHitbox)) {
 		canJump = 2;
 	}
 
