@@ -1,6 +1,10 @@
 #include <Objects\Island.hpp>
+#include "Scenery\Textures.hpp"
 
 int Island::index = 0;
+unsigned int Island::textureID = 0;
+
+
 
 void Island::kill()
 {
@@ -20,9 +24,17 @@ void Island::draw()
 {
 	if (toFree) return;
 	glPushMatrix();
-	glTranslatef(0, -0.5, 0);
+
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, Island::textureID);
+	mesh.render();
+	glDisable(GL_TEXTURE_2D);
+
+	glTranslatef(0, -1.5, 0);
 
 	Matrix::Vec<2> dim = size;
+	dim[0] -= 2;
+	dim[1] -= 2;
 	bool firstLayer = true;
 
 	while (dim[0] >= 1 && dim[1] >= 1) {
@@ -33,7 +45,7 @@ void Island::draw()
 		glTranslatef(0, -1.0, 0);
 		firstLayer = false;
 		dim[0] -= 2;
-		dim[1] -= 1;
+		dim[1] -= 2;
 	}
 
 	glPopMatrix();

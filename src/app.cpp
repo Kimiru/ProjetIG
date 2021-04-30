@@ -1,8 +1,14 @@
 #include <iostream>
 
 #define _USE_MATH_DEFINES
-#include <math.h>
 #include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#include <GL/glut.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 #include <Matrix/Mat.hpp>
 #include <Scenery/Window.hpp>
@@ -12,6 +18,26 @@
 #include <Objects/Player.hpp>
 #include <Scenery/Hitbox.hpp>
 #include <Objects/Island.hpp>
+#include <Scenery/Textures.hpp>
+
+/* Variables et constantes globales             */
+
+static const float blanc[] = { 1.0F,1.0F,1.0F,1.0F };
+static const float noir[] = { 0.0F,0.0F,0.0F,1.0F };
+
+static int illumination = 1;
+static int deuxFaces = 1;
+static int anim = 0;
+static int question = 0;
+static int texture = 1;
+static float rx = 0.0F;
+static float ry = 0.0F;
+static float rz = 0.0F;
+
+//////////////////////////////////////////////////
+
+static unsigned int textureID = 0;
+
 
 using namespace Matrix;
 using namespace Scenery;
@@ -19,13 +45,38 @@ using namespace Scenery;
 static float angle = 0;
 static Light l;
 
-
 std::vector<Island*> islands;
-
 
 Player player;
 
 Island* island = NULL;
+
+
+
+unsigned char* grass_image() {
+	int nc = 32;
+	int nl = 32;
+
+	srand(0);
+
+	unsigned char* img = (unsigned char*)calloc(3 * nc * nl, sizeof(unsigned char));
+	if (!img)
+		return NULL;
+	unsigned char* p = img;
+	for (int l = 0; l < nl; l++)
+		for (int c = 0; c < nc; c++) {
+			unsigned int rng = rand() % 100;
+			rng = rng * 6 + 64;
+			p[0] = 0;
+			p[1] = rng;
+			p[2] = 0;
+
+			p += 3;
+		}
+	return img;
+}
+
+
 
 void init() {
 	Island::index = 0;
@@ -35,6 +86,8 @@ void init() {
 	player.camera.set({ 0, 5, 5 });
 	island = new  Island({ 0, 0, 0 }, { 5, 5 }, &islands);
 	islands.push_back(island);
+	
+	
 }
 
 void _delete() {
@@ -132,6 +185,9 @@ void draw() {
 }
 
 int main(int argc, char** argv) {
+	unsigned char* img = grass_image();
+	Island::textureID = Textures::initTexture(img, 32, 32);
+
 	srand(time(NULL));
 
 	init();

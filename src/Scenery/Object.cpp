@@ -81,6 +81,7 @@ void Scenery::Object::render()
 		glScalef(scale.data[0], scale.data[1], scale.data[2]);
 	}
 
+
 	if (material != NULL) {
 		Material::save();
 		Material::base();

@@ -13,6 +13,7 @@ void Scenery::Triangle::renormalize()
 {
 	Vec<4> normal = Vertex::getNormal(*_1, *_2, *_3);
 	_1->normal = _2->normal = _3->normal = normal;
+	
 }
 
 void Scenery::Triangle::start()
