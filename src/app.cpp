@@ -86,8 +86,8 @@ void init() {
 	player.camera.set({ 0, 5, 5 });
 	island = new  Island({ 0, 0, 0 }, { 5, 5 }, &islands);
 	islands.push_back(island);
-	
-	
+
+
 }
 
 void _delete() {
@@ -162,8 +162,6 @@ void draw() {
 
 	l.use(); // use light
 
-
-
 	auto it = islands.begin();
 	while (it != islands.end()) {
 		(*it)->enterBox.draw();
@@ -182,8 +180,7 @@ void draw() {
 }
 
 int main(int argc, char** argv) {
-	unsigned char* img = grass_image();
-	Island::textureID = Textures::initTexture(img, 32, 32);
+
 
 	srand(time(NULL));
 
@@ -201,6 +198,8 @@ int main(int argc, char** argv) {
 	Window::drawFunc(draw);
 	Window::updateFunc(update);
 	l.turnOn();
+
+	Island::textureID = Textures::initTexture(grass_image(), 32, 32);
 
 	Window::launch();
 

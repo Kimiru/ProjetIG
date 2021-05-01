@@ -5,6 +5,10 @@
 
 namespace Scenery {
 
+	enum class Axis {
+		X, Y, Z
+	};
+
 	class PositionUpdater {
 
 	public:
@@ -146,84 +150,77 @@ namespace Scenery {
 
 		void collide(Hitbox::Cylinder hitbox, Hitbox::HitboxBundle bundle, Matrix::Vec<3> dir) {
 			std::function<void(Hitbox::Cylinder, Hitbox::Box)> funcBox = [this, dir](Hitbox::Cylinder c, Hitbox::Box b) {
-				auto rd2 = this->delta * 2;
 
-				this->reverseDelta();
-				c.setPosition(*this->pos);
-				// Gestion collision x
+				c.setPosition(*pos);
 
-				this->redoX();
-				c.setPosition(*this->pos);
-				if (dir.data[0] && c.collide(b)) {
-					// Collision d'un bloc venant de la gauche vers la droite
-					if (delta.data[0] > 0) {
-						float l = b.position.data[0] - b.size.data[0] / 2;
-						float r = c.position.data[0] + c.radius;
-						float dist = l - r;
-						this->pos->data[0] += dist;
-						this->delta.data[0] += dist;
-						this->vel.data[0] = 0;
+				Axis axis;
+				float adir;
+
+				float r = abs(b.right() - c.left());
+				float l = abs(b.left() - c.right());
+				float x = l > r ? r : l;
+
+				float _b = abs(b.bottom() - c.top());
+				float t = abs(b.top() - c.bottom());
+				float y = _b > t ? t : _b;
+
+				float f = abs(b.front() - c.back());
+				float ba = abs(b.back() - c.front());
+				float z = ba > f ? f : ba;
+
+				if (x < y && x < z) {
+					axis = Axis::X;
+					adir = l > r ? 1 : -1;
+				}
+				else if (z < x&& z < y) {
+					axis = Axis::Z;
+					adir = ba > f ? 1 : -1;
+				}
+				else {
+					axis = Axis::Y;
+					adir = _b > t ? 1 : -1;
+				}
+
+				if (dir.data[0] && axis == Axis::X) {
+					if (adir == 1 && delta.data[0] < 0) {
+						c.setLeft(b.right());
+						*pos = c.getPosition();
+						vel.data[0] = 0;
+
 					}
-					// Collision d'un bloc venant de la droite vers la gauche
-					else if (delta.data[0] < 0) {
-						float l = c.position.data[0] - c.radius;
-						float r = b.position.data[0] + b.size.data[0] / 2;
-						float dist = l - r;
-						this->pos->data[0] -= dist;
-						this->delta.data[0] -= dist;
-						this->vel.data[0] = 0;
+					if (adir == -1 && delta.data[0] > 0) {
+						c.setRight(b.left());
+						*pos = c.getPosition();
+						vel.data[0] = 0;
 					}
 				}
 
-
-				// Gestion collision y
-				this->redoY();
-				c.setPosition(*this->pos);
-				if (dir.data[1] && c.collide(b)) {
-					// Collision d'un bloc venant du bas vers le haut
-					if (delta.data[1] > 0) {
-						float l = b.position.data[1] - b.size.data[1] / 2;
-						float r = c.position.data[1] + c.height / 2;
-						float dist = l - r;
-						this->pos->data[1] += dist;
-						this->delta.data[1] += dist;
-						this->vel.data[1] = 0;
+				if (dir.data[1] && axis == Axis::Y) {
+					if (adir == 1 && delta.data[1] < 0) {
+						c.setBottom(b.top());
+						*pos = c.getPosition();
+						vel.data[1] = 0;
 					}
-					// Collision d'un bloc venant du haut vers le bas
-					else if (delta.data[1] < 0) {
-						float l = c.position.data[1] - c.height / 2;
-						float r = b.position.data[1] + b.size.data[1] / 2;
-						float dist = l - r;
-						this->pos->data[1] -= dist;
-						this->delta.data[1] -= dist;
-						this->vel.data[1] = 0;
+					if (adir == -1 && delta.data[1] > 0) {
+						c.setTop(b.bottom());
+						*pos = c.getPosition();
+						vel.data[1] = 0;
 					}
 				}
 
-				// Gestion collision z
-				this->redoZ();
-				c.setPosition(*this->pos);
-				if (dir.data[2] && c.collide(b)) {
-					// Collision d'un bloc venant de la gauche vers la droite
-					if (delta.data[2] > 0) {
-						float l = b.position.data[2] - b.size.data[2] / 2;
-						float r = c.position.data[2] + c.radius;
-						float dist = l - r;
-						this->pos->data[2] += dist;
-						this->delta.data[2] += dist;
-						this->vel.data[2] = 0;
+				if (dir.data[2] && axis == Axis::Z) {
+					if (adir == 1 && delta.data[2] < 0) {
+						c.setBack(b.front());
+						*pos = c.getPosition();
+						vel.data[2] = 0;
 					}
-					// Collision d'un bloc venant de la droite vers la gauche
-					else if (delta.data[2] < 0) {
-						float l = c.position.data[2] - c.radius;
-						float r = b.position.data[2] + b.size.data[2] / 2;
-						float dist = l - r;
-						this->pos->data[2] -= dist;
-						this->delta.data[2] -= dist;
-						this->vel.data[2] = 0;
+					if (adir == -1 && delta.data[2] > 0) {
+						c.setFront(b.back());
+						*pos = c.getPosition();
+						vel.data[2] = 0;
 					}
 				}
-				c.setPosition(*this->pos);
+
 			};
 
 			std::function<void(Hitbox::Cylinder, Hitbox::Cylinder)> funcCylinder = [this, dir](Hitbox::Cylinder c1, Hitbox::Cylinder c2) {

@@ -794,8 +794,8 @@ void Player::updatePos(float dt)
 	}
 
 	positionUpdater.update(dt);
-	positionUpdater.collide(hitbox, *groundbundle, { 0, 1, 0 });
-	positionUpdater.collide(hitbox, *bundle, { 1, 0, 1 });
+	positionUpdater.collide(hitbox, *groundbundle, { 1, 1, 1 });
+	positionUpdater.collide(hitbox, *bundle, { 1, 1, 1 });
 	hitbox.setPosition(translation);
 	groundHitbox.setPosition(translation);
 	if (positionUpdater.vel.data[1] <= 0 && (*groundbundle).collide(groundHitbox)) {

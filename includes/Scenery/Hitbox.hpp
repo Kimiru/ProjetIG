@@ -23,6 +23,7 @@ namespace Hitbox {
 		Anchor anchorX = Anchor::CENTER, anchorY = Anchor::CENTER, anchorZ = Anchor::CENTER;
 
 		void setPosition(Matrix::Vec<3> pos);
+		Matrix::Vec<3> getPosition();
 
 		float left() { return position.data[0] - size.data[0] / 2; }
 		float right() { return position.data[0] + size.data[0] / 2; }
@@ -30,6 +31,13 @@ namespace Hitbox {
 		float top() { return position.data[1] + size.data[1] / 2; }
 		float back() { return position.data[2] - size.data[2] / 2; }
 		float front() { return position.data[2] + size.data[2] / 2; }
+
+		void setLeft(float v) { position.data[0] = v + size.data[0] / 2; }
+		void setRight(float v) { position.data[0] = v - size.data[0] / 2; }
+		void setBottom(float v) { position.data[1] = v + size.data[1] / 2; }
+		void setTop(float v) { position.data[1] = v - size.data[1] / 2; }
+		void setBack(float v) { position.data[2] = v + size.data[2] / 2; }
+		void setFront(float v) { position.data[2] = v - size.data[2] / 2; }
 
 		bool collide(Box c);
 
@@ -53,6 +61,7 @@ namespace Hitbox {
 			return b;
 		}
 		void setPosition(Matrix::Vec<3> pos);
+		Matrix::Vec<3> getPosition();
 
 		float left() { return position.data[0] - radius; }
 		float right() { return position.data[0] + radius; }
@@ -60,6 +69,13 @@ namespace Hitbox {
 		float top() { return position.data[1] + height / 2; }
 		float back() { return position.data[2] - radius; }
 		float front() { return position.data[2] + radius; }
+
+		void setLeft(float v) { position.data[0] = v + radius; }
+		void setRight(float v) { position.data[0] = v - radius; }
+		void setBottom(float v) { position.data[1] = v + height / 2; }
+		void setTop(float v) { position.data[1] = v - height / 2; }
+		void setBack(float v) { position.data[2] = v + radius; }
+		void setFront(float v) { position.data[2] = v - radius; }
 
 		bool collide(Box b);
 		bool collide(Cylinder c);

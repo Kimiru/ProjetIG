@@ -35,6 +35,44 @@ void Hitbox::Box::setPosition(Matrix::Vec<3> pos)
 	position = pos;
 }
 
+Matrix::Vec<3> Hitbox::Box::getPosition()
+{
+
+	Matrix::Vec<3> pos = position;
+
+	switch (anchorX)
+	{
+	case Hitbox::Anchor::LEFT:
+		pos.data[0] -= size.data[0] / 2;
+		break;
+	case Hitbox::Anchor::RIGHT:
+		pos.data[0] += size.data[0] / 2;
+		break;
+	}
+
+	switch (anchorY)
+	{
+	case Hitbox::Anchor::BOTTOM:
+		pos.data[1] -= size.data[1] / 2;
+		break;
+	case Hitbox::Anchor::TOP:
+		pos.data[1] += size.data[1] / 2;
+		break;
+	}
+
+	switch (anchorZ)
+	{
+	case Hitbox::Anchor::BACK:
+		pos.data[2] -= size.data[2] / 2;
+		break;
+	case Hitbox::Anchor::FRONT:
+		pos.data[2] += size.data[2] / 2;
+		break;
+	}
+
+	return pos;
+}
+
 bool Hitbox::Box::collide(Box c)
 {
 	Matrix::Vec<3> size_2 = size / 2;
@@ -108,6 +146,44 @@ void Hitbox::Cylinder::setPosition(Matrix::Vec<3> pos)
 	}
 
 	position = pos;
+}
+
+Matrix::Vec<3> Hitbox::Cylinder::getPosition()
+{
+
+	Matrix::Vec<3> pos = position;
+
+	switch (anchorX)
+	{
+	case Hitbox::Anchor::LEFT:
+		pos.data[0] -= radius;
+		break;
+	case Hitbox::Anchor::RIGHT:
+		pos.data[0] += radius;
+		break;
+	}
+
+	switch (anchorY)
+	{
+	case Hitbox::Anchor::BOTTOM:
+		pos.data[1] -= height / 2;
+		break;
+	case Hitbox::Anchor::TOP:
+		pos.data[1] += height / 2;
+		break;
+	}
+
+	switch (anchorZ)
+	{
+	case Hitbox::Anchor::BACK:
+		pos.data[2] -= radius / 2;
+		break;
+	case Hitbox::Anchor::FRONT:
+		pos.data[2] += radius / 2;
+		break;
+	}
+
+	return pos;
 }
 
 bool Hitbox::Cylinder::collide(Box b)
