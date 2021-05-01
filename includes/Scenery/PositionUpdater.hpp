@@ -55,15 +55,26 @@ namespace Scenery {
 		 * Calculate the delta and apply it
 		 * Check for collisions between
 		 */
-		void update(float dt, Hitbox::Box hitbox, Hitbox::HitboxBundle bundle) {
+		void update(float dt, Hitbox::Box hitbox, Hitbox::HitboxBundle bundle, Matrix::Vec<3> dir) {
 			update(dt);
-			std::function<void(Hitbox::Box, Hitbox::Box)> func = [this, dt](Hitbox::Box b1, Hitbox::Box b2) {
+			hitbox.setPosition(*pos);
+			collide(hitbox, bundle, dir);
+
+		}
+		void update(float dt, Hitbox::Cylinder hitbox, Hitbox::HitboxBundle bundle, Matrix::Vec<3> dir) {
+			update(dt);
+			hitbox.setPosition(*pos);
+			collide(hitbox, bundle, dir);
+		}
+
+		void collide(Hitbox::Box hitbox, Hitbox::HitboxBundle bundle, Matrix::Vec<3> dir) {
+			std::function<void(Hitbox::Box, Hitbox::Box)> func = [this, dir](Hitbox::Box b1, Hitbox::Box b2) {
 				this->reverseDelta();
 
 				// Gestion collision x
 				this->redoX();
 				b1.setPosition(*this->pos);
-				if (b1.collide(b2)) {
+				if (dir.data[0] && b1.collide(b2)) {
 					// Collision d'un bloc venant de la gauche vers la droite
 					if (delta.data[0] > 0) {
 						float l = b2.position.data[0] - b2.size.data[0] / 2;
@@ -86,7 +97,7 @@ namespace Scenery {
 				// Gestion collision y
 				this->redoY();
 				b1.setPosition(*this->pos);
-				if (b1.collide(b2)) {
+				if (dir.data[1] && b1.collide(b2)) {
 					// Collision d'un bloc venant de la gauche vers la droite
 					if (delta.data[1] > 0) {
 						float l = b2.position.data[1] - b2.size.data[1] / 2;
@@ -109,7 +120,7 @@ namespace Scenery {
 				// Gestion collision z
 				this->redoZ();
 				b1.setPosition(*this->pos);
-				if (b1.collide(b2)) {
+				if (dir.data[2] && b1.collide(b2)) {
 					// Collision d'un bloc venant de la gauche vers la droite
 					if (delta.data[2] > 0) {
 						float l = b2.position.data[2] - b2.size.data[2] / 2;
@@ -131,20 +142,19 @@ namespace Scenery {
 				b1.setPosition(*this->pos);
 			};
 			bundle.collide(hitbox, func);
-
 		}
-		void update(float dt, Hitbox::Cylinder hitbox, Hitbox::HitboxBundle bundle) {
-			update(dt);
-			hitbox.setPosition(*pos);
-			// Gestion Cylindre
 
+		void collide(Hitbox::Cylinder hitbox, Hitbox::HitboxBundle bundle, Matrix::Vec<3> dir) {
+			std::function<void(Hitbox::Cylinder, Hitbox::Box)> funcBox = [this, dir](Hitbox::Cylinder c, Hitbox::Box b) {
+				auto rd2 = this->delta * 2;
 
-			std::function<void(Hitbox::Cylinder, Hitbox::Box)> funcBox = [this, dt](Hitbox::Cylinder c, Hitbox::Box b) {
 				this->reverseDelta();
+				c.setPosition(*this->pos);
 				// Gestion collision x
+
 				this->redoX();
 				c.setPosition(*this->pos);
-				if (c.collide(b)) {
+				if (dir.data[0] && c.collide(b)) {
 					// Collision d'un bloc venant de la gauche vers la droite
 					if (delta.data[0] > 0) {
 						float l = b.position.data[0] - b.size.data[0] / 2;
@@ -169,7 +179,7 @@ namespace Scenery {
 				// Gestion collision y
 				this->redoY();
 				c.setPosition(*this->pos);
-				if (c.collide(b)) {
+				if (dir.data[1] && c.collide(b)) {
 					// Collision d'un bloc venant du bas vers le haut
 					if (delta.data[1] > 0) {
 						float l = b.position.data[1] - b.size.data[1] / 2;
@@ -193,7 +203,7 @@ namespace Scenery {
 				// Gestion collision z
 				this->redoZ();
 				c.setPosition(*this->pos);
-				if (c.collide(b)) {
+				if (dir.data[2] && c.collide(b)) {
 					// Collision d'un bloc venant de la gauche vers la droite
 					if (delta.data[2] > 0) {
 						float l = b.position.data[2] - b.size.data[2] / 2;
@@ -216,13 +226,13 @@ namespace Scenery {
 				c.setPosition(*this->pos);
 			};
 
-			std::function<void(Hitbox::Cylinder, Hitbox::Cylinder)> funcCylinder = [this, dt](Hitbox::Cylinder c1, Hitbox::Cylinder c2) {
+			std::function<void(Hitbox::Cylinder, Hitbox::Cylinder)> funcCylinder = [this, dir](Hitbox::Cylinder c1, Hitbox::Cylinder c2) {
 				this->reverseDelta();
 
 				// Gestion collision y
 				this->redoY();
 				c1.setPosition(*this->pos);
-				if (c1.collide(c2)) {
+				if (dir.data[1] && c1.collide(c2)) {
 					// Collision d'un bloc venant de la gauche vers la droite
 					if (delta.data[1] > 0) {
 						float l = c2.position.data[1] - c2.height / 2;
@@ -246,7 +256,7 @@ namespace Scenery {
 				this->redoX();
 				this->redoZ();
 				c1.setPosition(*this->pos);
-				if (c1.collide(c2)) {
+				if ((dir.data[0] || dir.data[2]) && c1.collide(c2)) {
 					Matrix::Vec<3> dir = c2.position - c1.position;
 					dir.data[1] = 0;
 					dir.normalize();

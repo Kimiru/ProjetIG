@@ -48,7 +48,6 @@ public:
 		enterBox.size.set({ size[0], 1, size[1] });
 		enterBox.anchorY = Hitbox::Anchor::BOTTOM;
 		enterBox.setPosition(position);
-		bundle.add(&baseBox);
 	}
 
 	Island(Matrix::Vec<3> position, Matrix::Vec<2> dimension, std::vector<Island*>* others) : Island(position, dimension) {

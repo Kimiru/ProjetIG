@@ -38,6 +38,8 @@ public:
 	Hitbox::Cylinder hitbox, groundHitbox;
 	int canJump = 2;
 	Hitbox::HitboxBundle* bundle = NULL;
+	Hitbox::HitboxBundle* groundbundle = NULL;
+
 
 
 	Vec<3> camera = Vec<3>({ 0, 1, 1 });
