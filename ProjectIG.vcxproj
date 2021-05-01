@@ -163,6 +163,7 @@
     <ClCompile Include="src\Matrix\Vec.cpp" />
     <ClCompile Include="src\Scenery\Light.cpp" />
     <ClCompile Include="src\Scenery\Material.cpp" />
+    <ClCompile Include="src\Scenery\PositionUpdater.cpp" />
     <ClCompile Include="src\Scenery\SkinnedMesh.cpp" />
     <ClCompile Include="src\Scenery\Triangle.cpp" />
     <ClCompile Include="src\Scenery\Vertex.cpp" />
@@ -214,7 +215,9 @@
     <ClInclude Include="includes\Scenery\Light.hpp" />
     <ClInclude Include="includes\Scenery\Material.hpp" />
     <ClInclude Include="includes\Scenery\Object.hpp" />
+    <ClInclude Include="includes\Scenery\PositionUpdater.hpp" />
     <ClInclude Include="includes\Scenery\SkinnedMesh.hpp" />
+    <ClInclude Include="includes\Scenery\Textures.hpp" />
     <ClInclude Include="includes\Scenery\Triangle.hpp" />
     <ClInclude Include="includes\Scenery\Window.hpp" />
   </ItemGroup>
