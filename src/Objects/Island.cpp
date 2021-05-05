@@ -88,6 +88,9 @@ Island::Island(Matrix::Vec<3> position, Matrix::Vec<2> dimension)
 	enterBox.size.set({ size[0], 1, size[1] });
 	enterBox.anchorY = Hitbox::Anchor::BOTTOM;
 	enterBox.setPosition(position);
+
+	crystal.translation.set({ 0, 1, 0 });
+	crystal.l.position(0, 1, 0);
 }
 
 void Island::kill()
@@ -108,6 +111,8 @@ void Island::draw()
 {
 	if (toFree) return;
 	glPushMatrix();
+	crystal.render();
+	crystal.l.use();
 
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, Island::textureID);

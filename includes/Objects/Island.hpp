@@ -8,6 +8,7 @@
 #include <Scenery\Vertex.hpp>
 #include <Scenery\SkinnedMesh.hpp>
 #include <Scenery\Triangle.hpp>
+#include <Objects/Crystal.hpp>
 
 class Island : public Scenery::Object {
 public:
@@ -24,6 +25,7 @@ public:
 	Island* prev = NULL, * next = NULL;
 	Scenery::SkinnedMesh mesh;
 	Scenery::Material meshMat;
+	Crystal crystal;
 
 	static int index;
 	static unsigned int textureID;

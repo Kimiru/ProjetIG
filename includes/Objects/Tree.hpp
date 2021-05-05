@@ -4,48 +4,48 @@
 #include "Scenery/Material.hpp"
 #include "Scenery/Hitbox.hpp"
 
-	class Leaves : public Scenery::Object {
+class Leaves : public Scenery::Object {
 
-	private:
+private:
 
-		Scenery::Material mater;
+	Scenery::Material mater;
 
-	public:
+public:
 
-		Leaves();
+	Leaves();
 
-		void draw();
+	void draw();
 
-	};
+};
 
-	class Trunk : public Scenery::Object {
+class Trunk : public Scenery::Object {
 
-	private:
+private:
 
-		Scenery::Material mater;
+	Scenery::Material mater;
 
-	public:
+public:
 
-		Trunk();
+	Trunk();
 
-		void draw();
+	void draw();
 
-	};
+};
 
-	class Tree : public Scenery::Object {
+class Tree : public Scenery::Object {
 
-		Leaves leaves;
-		Trunk trunk;
+	Leaves leaves;
+	Trunk trunk;
 
-	public:
+public:
 
-		Hitbox::Box hitbox;
+	Hitbox::Box hitbox;
 
-		Tree();
+	Tree();
 
-		void draw();
-
-
+	void draw();
 
 
-	};
+
+
+};

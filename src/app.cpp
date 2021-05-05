@@ -43,7 +43,6 @@ using namespace Matrix;
 using namespace Scenery;
 
 static float angle = 0;
-static Light l;
 
 std::vector<Island*> islands;
 
@@ -66,7 +65,7 @@ unsigned char* grass_image() {
 	for (int l = 0; l < nl; l++)
 		for (int c = 0; c < nc; c++) {
 			unsigned int rng = rand() % 100;
-			rng = rng * 6 + 64;
+			rng = rng * 1 + 92;
 			p[0] = 0;
 			p[1] = rng;
 			p[2] = 0;
@@ -105,7 +104,6 @@ void update(float dt) {
 
 	angle += dt * M_PI_2 / 2;
 
-	l.position(cos(angle) * 10, 2, sin(angle) * 10);
 
 	auto it = islands.begin();
 	while (it != islands.end()) {
@@ -151,7 +149,8 @@ void update(float dt) {
 }
 
 void draw() {
-	glClearColor(0.5F, 0.5F, 0.5F, 0.5F);
+	float per = .3;
+	glClearColor((75.0F / 255.0f) * per, 0, (130.0F / 255.0f) * per, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glPushMatrix();
 
@@ -160,16 +159,12 @@ void draw() {
 		player.translation.data[0], player.translation.data[1] + .5, player.translation.data[2],
 		.0f, 1.0f, .0f);
 
-	l.use(); // use light
 
 	auto it = islands.begin();
 	while (it != islands.end()) {
-		(*it)->enterBox.draw();
 		(*it++)->render();
 	}
 	player.render();
-
-	player.groundHitbox.draw();
 
 	glPopMatrix();
 	glFlush();
@@ -184,21 +179,15 @@ int main(int argc, char** argv) {
 
 	srand(time(NULL));
 
-	init();
-
-	player.islands = &islands;
-
-
-	l.diffuse(1.0f, 1.0f, 1.0f, 1.0f).position(-10.0f, .0f, 0.0f);
-	l.specular(1.0f, 1.0f, 1.0f, 1.0f);
 
 	atexit(_delete);
 
 	Window::create(argc, argv, 900, 600, "Island Jumper");
 	Window::drawFunc(draw);
 	Window::updateFunc(update);
-	l.turnOn();
 
+	init();
+	player.islands = &islands;
 	Island::textureID = Textures::initTexture(grass_image(), 32, 32);
 
 	Window::launch();

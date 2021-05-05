@@ -10,7 +10,7 @@ Player::Player()
 
 	groundHitbox.anchorY = Hitbox::Anchor::TOP;
 	groundHitbox.radius = .2;
-	groundHitbox.height = .01;
+	groundHitbox.height = .05;
 
 	eyeMater.diffuse(0, 0, 0, 0).ambiant(0, 0, 0, 0).frontAndBack();
 
