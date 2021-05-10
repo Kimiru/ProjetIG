@@ -20,6 +20,8 @@
 #include <Objects/Island.hpp>
 #include <Scenery/Textures.hpp>
 
+
+
 /* Variables et constantes globales             */
 
 static const float blanc[] = { 1.0F,1.0F,1.0F,1.0F };
@@ -175,7 +177,6 @@ void draw() {
 }
 
 int main(int argc, char** argv) {
-
 
 	srand(time(NULL));
 
