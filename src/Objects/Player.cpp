@@ -677,7 +677,7 @@ void Player::checkInput(float dt)
 	bool _s = Window::getKey('s');
 	bool _d = Window::getKey('d');
 	if (_z || _q || _s || _d) {
-		if (!walk.run && abs(positionUpdater.vel.data[1]) < .1 && (*groundbundle).collide(groundHitbox)) {
+		if (!walk.run && abs(positionUpdater.vel.data[1]) < .5 && (*groundbundle).collide(groundHitbox)) {
 			animations.play(1);
 		}
 		float angle = (camera - translation).angle(2, 0);
