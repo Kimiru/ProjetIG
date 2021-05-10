@@ -718,7 +718,7 @@ void Player::checkInput(float dt)
 
 		}
 	}
-	else if (!idle.run && abs(positionUpdater.vel.data[1]) < .1 && (*groundbundle).collide(groundHitbox)) {
+	else if (!idle.run && abs(positionUpdater.vel.data[1]) < .5 && (*groundbundle).collide(groundHitbox)) {
 		animations.stop();
 		skeleton.reset();
 		animations.play(0);
@@ -731,11 +731,12 @@ void Player::checkInput(float dt)
 		animations.play(2);
 	}
 
-	if (!fall.run && !jump.run && !jumpfall.run && positionUpdater.vel.data[1] < -.1) {
+
+	if (!fall.run && !jump.run && !jumpfall.run && positionUpdater.vel.data[1] < -.5) {
 		animations.play(3);
 	}
 
-	if (jump.run && !jumpfall.run && jump.time >= .3 && positionUpdater.vel.data[1] < -.1) {
+	if (jump.run && !jumpfall.run && jump.time >= .3 && positionUpdater.vel.data[1] < -.5) {
 		animations.play(4);
 	}
 
