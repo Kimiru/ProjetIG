@@ -12,30 +12,27 @@ namespace Matrix {
 
 		float data[N];
 
-		/// <summary>
-		/// Create a Vector of size N.
-		/// 
-		/// Create a Vector of size N where all the values are initialized 
-		/// with the value 0.
-		/// </summary>
+		/**
+		 * Create an empty vector 
+		 */
 		Vec() {
 			for (int i = 0; i < N; i++)
 				data[i] = 0;
 		}
 
-		/// <summary>
-		/// Create a Vector of size N.
-		/// 
-		/// Create a Vector of size N where the values are define by array
-		/// of size N given as parameter.
-		/// </summary>
-		/// <param name="values">The array of values used to set the Vector default values.</param>
+		/**
+		 * Create a vector from values array
+		 */
 		Vec(float values[N]) {
 			for (int i = 0; i < N; i++) {
 				data[i] = values[i];
 			}
 		}
 
+		/**
+		 * Create a vector from initializer list
+		 * If missing values, replaced by 0
+		 */
 		Vec(std::initializer_list<float> list) {
 			auto it = list.begin();
 			int index = 0;
@@ -49,12 +46,9 @@ namespace Matrix {
 			}
 		}
 
-		/// <summary>
-		/// Convert a Vector.
-		/// 
-		/// Convert a Vector of size N to a Vector of Size M. Adding zeros
-		/// or removing values if necessary.
-		/// </summary>
+		/**
+		 * Convert a N size vector to a M size vector 
+		 */
 		template<int M>
 		operator Vec<M>() {
 			Vec<M> res;
@@ -72,24 +66,16 @@ namespace Matrix {
 			return res;
 		}
 
-		/// <summary>
-		/// Get a value of the Vector.
-		/// 
-		/// Get an editable value of the Vector from a given index.
-		/// </summary>
-		/// <param name="index">The index to get the value from.</param>
-		/// <returns>A reference to the value at the given index.</returns>
+		/**
+		 * Return the value at the given index
+		 */
 		float& operator[](int index) {
 			return data[index];
 		}
 
-		/// <summary>
-		/// Calculate Vector product.
-		/// 
-		/// Calculate the Vector product between this Vector and a given Vector.
-		/// </summary>
-		/// <param name="v">The Vector which to do the product with.</param>
-		/// <returns>A new Vector, result of the product between this and the Vector v.</returns>
+		/**
+		 * Return the vector product
+		 */
 		Vec<3> operator^(const Vec<3> v) {
 			Vec<3> res;
 			res.data[0] = data[1] * v.data[2] - data[2] * v.data[1];
@@ -98,6 +84,9 @@ namespace Matrix {
 			return res;
 		}
 
+		/**
+		 * Return the scalar product
+		 */
 		float operator*(const Vec<N> v) {
 			float res = 0;
 			for (int i = 0; i < N; i++)
@@ -105,6 +94,9 @@ namespace Matrix {
 			return res;
 		}
 
+		/**
+		 * Return the sum of vectors
+		 */
 		Vec<N> operator+(const Vec<N> v) {
 			Vec<N> res;
 			for (int i = 0; i < N; i++)
@@ -112,11 +104,17 @@ namespace Matrix {
 			return res;
 		}
 
+		/**
+		 * Add the given vector to the vector
+		 */
 		void operator+=(const Vec<N> v) {
 			for (int i = 0; i < N; i++)
 				data[i] += v.data[i];
 		}
 
+		/**
+		 * Return the substraction of vectors
+		 */
 		Vec<N> operator-(const Vec<N> v) {
 			Vec<N> res;
 			for (int i = 0; i < N; i++)
@@ -124,11 +122,18 @@ namespace Matrix {
 			return res;
 		}
 
+		/**
+		 * Substract the given vector to the vector
+		 */
 		void operator-=(const Vec<N> v) {
 			for (int i = 0; i < N; i++)
 				data[i] -= v.data[i];
 		}
 
+		/**
+		 * Multiply each value of the vector by n
+		 * Returns the result
+		 */
 		Vec<N> operator*(float n) {
 			Vec<N> res;
 			for (int i = 0; i < N; i++)
@@ -136,12 +141,20 @@ namespace Matrix {
 			return res;
 		}
 
+		/**
+		 * Multiply each value by n
+		 * Return itself
+		 */
 		Vec<N> operator*=(float n) {
 			for (int i = 0; i < N; i++)
 				data[i] *= n;
 			return *this;
 		}
 
+		/**
+		 * Divide each value of the vector by n
+		 * Returns the result
+		 */
 		Vec<N> operator/(float n) {
 			Vec<N> res;
 			for (int i = 0; i < N; i++)
@@ -149,22 +162,20 @@ namespace Matrix {
 			return res;
 		}
 
+		/**
+		 * Divide each value of the vector by n
+		 * Returns itself
+		 */
 		Vec<N> operator/=(float n) {
 			for (int i = 0; i < N; i++)
 				data[i] /= n;
 			return *this;
 		}
 
-		/// <summary>
-		/// Set value at then end
-		/// 
-		/// Set a given value at end of the vector.
-		/// 
-		/// Can be used to set last value while operating with
-		/// homogeneous coordinates.
-		/// </summary>
-		/// <param name="n">The value to set at then end of the vector.</param>
-		/// <returns>A reference to this.</returns>
+		/**
+		 * Define the last value by n
+		 * Returns itself
+		 */
 		Vec<N> operator<<(float n) {
 			data[N - 1] = n;
 			return *this;
@@ -172,8 +183,8 @@ namespace Matrix {
 
 
 		/**
-			Return the vector with the minimum value of both vector
-		**/
+		 *	Return the vector with the minimum value of both vector
+		 */
 		Vec<N> operator<(Vec<N> v) {
 			Vec<N> res;
 			for (int i = 0; i < N; i++) {
@@ -183,8 +194,8 @@ namespace Matrix {
 		}
 
 		/**
-			Return the vector with the maximum value of both vector
-		**/
+		 *	Return the vector with the maximum value of both vector
+		 */
 		Vec<N> operator>(Vec<N> v) {
 			Vec<N> res;
 			for (int i = 0; i < N; i++) {
@@ -195,8 +206,8 @@ namespace Matrix {
 
 
 		/**
-			Return the vector with opposite value of each data.
-		**/
+		 *	Return the vector with opposite value of each data.
+		 */
 		Vec<N> operator-() {
 			Vec<N> res;
 			for (int i = 0; i < N; i++) {
@@ -206,8 +217,8 @@ namespace Matrix {
 		}
 
 		/**
-
-		**/
+		 * Return the vector with each value positive
+		 **/
 		Vec<N> abs() {
 			Vec<N> res;
 			for (int i = 0; i < N; i++) {
@@ -216,6 +227,9 @@ namespace Matrix {
 			return res;
 		}
 
+		/**
+		 * Return the vector representing the sign of each value
+		 */
 		Vec<N> sign() {
 			Vec<N> res;
 			for (int i = 0; i < N; i++) {
@@ -226,8 +240,8 @@ namespace Matrix {
 
 
 		/**
-			Multiply 2 vectors
-		**/
+		 *	Multiply 2 vectors, value by value
+		 */
 		Vec<N> multiply(Vec<N> v) {
 			Vec<N> res;
 			for (int i = 0; i < N; i++) {
@@ -236,6 +250,9 @@ namespace Matrix {
 			return res;
 		}
 
+		/**
+		 * Define the content of the vector with a given list
+		 */
 		void set(std::initializer_list<float> list) {
 			int index = 0;
 			auto it = list.begin();
@@ -244,6 +261,9 @@ namespace Matrix {
 			}
 		}
 
+		/**
+		 * Return the angle of the vector in a given plan
+		 */
 		float angle(int x, int y) {
 			Vec<2> v = Vec<2>({ data[x], data[y] });
 			v.normalize();
@@ -253,6 +273,9 @@ namespace Matrix {
 			return _acos * sign;
 		}
 
+		/**
+		 * Return the length of a vector
+		 */
 		float length() {
 			float res = 0;
 			for (int i = 0; i < N; i++) res += data[i] * data[i];
@@ -260,11 +283,17 @@ namespace Matrix {
 			return res;
 		}
 
+		/**
+		 * Normalize the vector
+		 */
 		void normalize() {
 			float length = this->length();
 			*this /= length;
 		}
 
+		/**
+		 * Check if all values are equal to a given value
+		 */
 		bool all(float value) {
 			for (int i = 0; i < N; i++)
 				if (data[i] != value) return false;
@@ -275,7 +304,9 @@ namespace Matrix {
 
 };
 
-
+/**
+ * Print the vector
+ */
 template<int N>
 std::ostream& operator<<(std::ostream& os, const Matrix::Vec<N>& v) {
 	os << "Vector<" << N << ">(";

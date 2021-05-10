@@ -30,6 +30,9 @@ public:
 	static int index;
 	static unsigned int textureID;
 
+	/**
+	 * Island constructor, create the island, hitbox and trees
+	 */
 	Island(Matrix::Vec<3> position, Matrix::Vec<2> dimension);
 
 	Island(Matrix::Vec<3> position, Matrix::Vec<2> dimension, std::vector<Island*>* others) : Island(position, dimension) {
@@ -42,6 +45,9 @@ public:
 		}
 	}
 
+	/**
+	 * Remove the island from the islands list
+	 */
 	void kill();
 
 	void draw();

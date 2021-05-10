@@ -11,6 +11,7 @@
 
 namespace Hitbox {
 
+	
 	enum class Anchor {
 		LEFT, RIGHT, TOP, BOTTOM, FRONT, BACK, CENTER
 	};
@@ -25,6 +26,10 @@ namespace Hitbox {
 		void setPosition(Matrix::Vec<3> pos);
 		Matrix::Vec<3> getPosition();
 
+
+		/**
+		 * Return the value depending on the axis and the side.
+		 */
 		float left() { return position.data[0] - size.data[0] / 2; }
 		float right() { return position.data[0] + size.data[0] / 2; }
 		float bottom() { return position.data[1] - size.data[1] / 2; }
@@ -39,6 +44,9 @@ namespace Hitbox {
 		void setBack(float v) { position.data[2] = v + size.data[2] / 2; }
 		void setFront(float v) { position.data[2] = v - size.data[2] / 2; }
 
+		/**
+		 * Test a collision with a box
+		 */
 		bool collide(Box c);
 
 		void draw();
@@ -77,7 +85,14 @@ namespace Hitbox {
 		void setBack(float v) { position.data[2] = v + radius; }
 		void setFront(float v) { position.data[2] = v - radius; }
 
+		/**
+		 * Test a collision with a box (convert into a cube before testing)
+		 */
 		bool collide(Box b);
+
+		/**
+		 * Test a collision with a cylinder
+		 */
 		bool collide(Cylinder c);
 
 		void draw();
@@ -97,6 +112,9 @@ namespace Hitbox {
 			foundCylinder = NULL;
 		}
 
+		/**
+		 * Concatenate two bundles
+		 */
 		HitboxBundle operator+(HitboxBundle bundle) {
 			HitboxBundle res;
 			for (Box* b : boxes) res.add(b);
@@ -106,14 +124,28 @@ namespace Hitbox {
 			return res;
 		}
 
+		/**
+		 * Concatenate two bundles
+		 */
 		HitboxBundle& operator+=(HitboxBundle bundle) {
 			for (Box* b : bundle.boxes) add(b);
 			for (Cylinder* c : bundle.cylinders) add(c);
 			return *this;
 		}
 
+		/**
+		 * Add a cylinder to the bundle
+		 */
 		void add(Cylinder* cylinder);
+
+		/**
+		 * Add a box to the bundle
+		 */
 		void add(Box* boxes);
+
+		/**
+		 * Test collisions with all the bundle content
+		 */
 		bool collide(Box box);
 		bool collide(Cylinder cylinder);
 

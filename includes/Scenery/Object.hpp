@@ -31,15 +31,36 @@ namespace Scenery {
 
 		Object();
 
+		/**
+		 * Manage children
+		 */
 		void add(Object* child);
 		void remove(int index);
 		void remove(std::string name);
 
+		/**
+		 * Build transformation matrix
+		 */
 		virtual void build();
+
+		/**
+		 * Apply the transformation matrix to the vector given in paramater
+		 */
 		Vec<4> applyTransformation(Vec<4> v);
 
+		/**
+		 * Apply materials, transformations, render the object and its children
+		 */
 		void render();
+
+		/**
+		 * Draw the object
+		 */
 		virtual void draw();
+
+		/**
+		 * Update the object
+		 */
 		virtual void update(float dt);
 	};
 

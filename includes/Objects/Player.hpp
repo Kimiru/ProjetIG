@@ -47,13 +47,25 @@ public:
 
 	const float speed = 4;
 
+	/**
+	 * Create the player, its hitbox, its mesh and its animations
+	 */
 	Player();
 	~Player() { delete material; }
 
 	void update(float dt);
 
 private:
+	/**
+	 * Check the input and update the player 
+	 */
 	void checkInput(float dt);
+	/**
+	 * Update the position depending on velocity and acceleration
+	 */
 	void updatePos(float dt);
+	/**
+	 * Update the camera position
+	 */
 	void updateCam(float dt);
 };

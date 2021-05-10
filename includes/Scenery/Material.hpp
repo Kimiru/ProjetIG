@@ -13,6 +13,9 @@ namespace Scenery {
 		bool doCull = true;
 		int cullingFace = GL_BACK;
 
+		/**
+		 * Define material properties, use only which you need
+		 */
 		Material& ambiant(float r, float g, float b, float a);
 		Material& diffuse(float r, float g, float b, float a);
 		Material& specular(float r, float g, float b, float a);
@@ -24,10 +27,24 @@ namespace Scenery {
 		Material& cullFront();
 		Material& cullBack();
 		Material& cullNone();
+		/**
+		 * Apply all needed glMaterial
+		 */
 		void use();
 
+		/**
+		 * Save the context of the material
+		 */
 		static void save();
+
+		/**
+		 * Reset the default material
+		 */
 		static void base();
+
+		/**
+		 * Reset the previous context
+		 */
 		static void restore();
 
 	};

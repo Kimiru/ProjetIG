@@ -20,6 +20,9 @@ namespace Scenery {
 
 		Bone() {}
 
+		/**
+		 * Recompute the bone position relative to the skeleton 
+		 */
 		void build();
 
 		void draw() {
@@ -37,6 +40,9 @@ namespace Scenery {
 				boneScale[index++] = *it++;
 		}
 
+		/**
+		 * Reset the rotation of the bone
+		 */
 		void reset();
 
 	};
@@ -55,8 +61,19 @@ namespace Scenery {
 		Skeleton& operator<<(Bone* bone);
 		Bone* operator[](int index);
 
+		/**
+		 * Build all bones
+		 */
 		void build();
+
+		/**
+		 * Save all inverted matrix of the skeleton
+		 */
 		void save();
+
+		/**
+		 * Reset all the bones
+		 */
 		void reset();
 	};
 
@@ -97,18 +114,38 @@ namespace Scenery {
 			return bones[index];
 		}
 
+		/**
+		 * Add polygons of given arity, map contains the indexes of the vertex.
+		 */
 		void addPolygon(int nbrSide, int nbrPoly, int map[]);
 		void addPolygon(int nbrSide, int nbrPoly, std::initializer_list<int> map);
 
+		/**
+		 * Add quadStrip with given nodes, map contains the indexes of the vertex.
+		 */
 		void addQuadStrip(int nodes, int map[]);
 		void addQuadStrip(int nodes, std::initializer_list<int> map);
 
+		/**
+		 * Initialize the mesh with vertices a certain amount of bones and a bone attributed to each vertice
+		 */
 		void init(int verticesAmount, const Vertex sourceVertices[],
 			int weights[],
 			int amountBones);
 
+		/**
+		 * Build and save the skeleton
+		 */
 		void compileSkeleton();
+
+		/**
+		 * Update the vertices position
+		 */
 		void build();
+
+		/**
+		 * Render all the meshed triangles
+		 */
 		void draw();
 
 	};

@@ -24,6 +24,9 @@ namespace Scenery {
 
 		~Light();
 
+		/**
+		 * Define light properties, only use which you want
+		 */
 		Light& position(float x, float y, float z);
 		Light& direction(float x, float y, float z);
 		Light& ambiant(float r, float g, float b, float a);
@@ -36,9 +39,15 @@ namespace Scenery {
 		Light& linearAttenuation(float value);
 		Light& quadraticAttenuation(float value);
 
+		/**
+		 * Automatically choose a light to use and to return
+		 */
 		void turn(bool enabled);
 		void turnOn();
 		void turnOff();
+		/**
+		 * Apply all need GLLight
+		 */
 		void use();
 		bool isOn() { return enabled; }
 

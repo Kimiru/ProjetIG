@@ -65,12 +65,21 @@ namespace Scenery {
 			collide(hitbox, bundle, dir);
 
 		}
+
+		/**
+		 * Update the pos
+		 * Calculate the delta and apply it
+		 * Check for collissiobs between
+		 */
 		void update(float dt, Hitbox::Cylinder hitbox, Hitbox::HitboxBundle bundle, Matrix::Vec<3> dir) {
 			update(dt);
 			hitbox.setPosition(*pos);
 			collide(hitbox, bundle, dir);
 		}
 
+		/**
+		 * Apply collisions
+		 */
 		void collide(Hitbox::Box hitbox, Hitbox::HitboxBundle bundle, Matrix::Vec<3> dir) {
 			std::function<void(Hitbox::Box, Hitbox::Box)> func = [this, dir](Hitbox::Box c, Hitbox::Box b) {
 

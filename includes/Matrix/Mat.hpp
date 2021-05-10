@@ -12,17 +12,27 @@ namespace Matrix {
 
 		float data[N][N];
 
+		/**
+		 * Create an empty matrix  
+		 */
 		Mat() {
 			for (int line = 0; line < N; line++)
 				for (int column = 0; column < N; column++)
 					data[line][column] = 0;
 		}
+
+		/**
+		 * Create a matrix and copy the value array
+		 */
 		Mat(float values[N][N]) {
 			for (int line = 0; line < N; line++)
 				for (int column = 0; column < N; column++)
 					data[line][column] = values[line][column];
 		}
 
+		/**
+		 * Convert a N size matrix to a M size matrix, add zeros if needed
+		 */
 		template<int M>
 		operator Mat<M>() {
 			Mat<M> res;
@@ -34,9 +44,16 @@ namespace Matrix {
 			return res;
 		}
 
+		/**
+		 * Return the column which index is index
+		 */
 		float* operator[](int index) {
 			return data[index];
 		}
+
+		/**
+		 * Reverse the matrix
+		 */
 		Mat<N> operator!() {
 			float _det = det();
 			if (_det == 0)
@@ -45,6 +62,9 @@ namespace Matrix {
 			return commatrix().transpose() * _det;
 		}
 
+		/**
+		 * Multiply 2 matrix and return the result
+		 */
 		Mat<N> operator*(Mat<N> m) {
 			Mat<N> res;
 			for (int column = 0; column < N; column++)
@@ -55,6 +75,10 @@ namespace Matrix {
 				}
 			return res;
 		}
+
+		/**
+		 * Multiply all member of the matrix by n and return the result
+		 */
 		Mat<N> operator*(float n) {
 			Mat<N> res;
 			for (int column = 0; column < N; column++)
@@ -62,6 +86,10 @@ namespace Matrix {
 					res.data[column][line] = data[column][line] * n;
 			return res;
 		}
+
+		/**
+		 * Multiply a matrix with a vector and return the result
+		 */
 		Vec<N> operator*(Vec<N> v) {
 			Vec<N> res;
 			for (int line = 0; line < N; line++) {
@@ -77,15 +105,7 @@ namespace Matrix {
 
 
 		/**
-			Return the identity matrix
-				 0    1    ...  N-1
-				-----------------
-			0	|1    0    0    0
-			1   |0    1    0    0
-			... |0    0    1    0
-			N-1	|0    0    0    1
-
-			@return Matrix4 the identity matrix
+		 * Return the indentity matrix
 		 */
 		static Mat<N> id() {
 			Mat<N> res;
@@ -95,12 +115,7 @@ namespace Matrix {
 		}
 
 		/**
-			Return the rotation matrix of a given angle on the x axis
-				1     0      0       0
-				0     cos(a) -sin(a) 0
-				0     sin(a) cos(a)  0
-				0     0      0       1
-			@return Matrix4 the rotation matrix
+		 * Return the rotation matrix of a given angle on the x axis
 		 */
 		static Mat<4> rotX(float angle) {
 			Mat<4> res = Mat<4>::id();
@@ -112,12 +127,7 @@ namespace Matrix {
 		}
 
 		/**
-			Return the rotation matrix of a given angle on the y axis
-				cos(a)  0       sin(a) 0
-				0       1       0      0
-				-sin(a) 0       cos(a) 0
-				0       0       0      1
-			@return Matrix4 the rotation matrix
+		 * Return the rotation matrix of a given angle on the y axis
 		 */
 		static Mat<4> rotY(float angle) {
 			Mat<4> res = Mat<4>::id();
@@ -129,12 +139,7 @@ namespace Matrix {
 		}
 
 		/**
-			Return the rotation matrix of a given angle on the z axis
-				cos(a)  -sin(a) 0      0
-				sin(a)  cos(a)  0      0
-				0       0       0      0
-				0       0       0      1
-			@return Matrix4 the rotation matrix
+		 * Return the rotation matrix of a given angle on the z axis
 		 */
 		static Mat<4> rotZ(float angle) {
 			Mat<4> res = Mat<4>::id();
@@ -145,6 +150,10 @@ namespace Matrix {
 			return res;
 		}
 
+		/**
+		 * Return a rotation matrix along the axis x,y,z 
+		 * x, y and z have to be normalized
+		 */
 		static Mat<N> rot(float angle, float x, float y, float z) {
 			Mat<4> res = Mat<4>::id();
 
@@ -167,12 +176,7 @@ namespace Matrix {
 
 
 		/**
-			Return the translation matrix of given values
-				1  0  0  x
-				0  1  0  y
-				0  0  1  z
-				0  0  0  1
-			@return Matrix4 the rotation matrix
+		 * Return the translation matrix of given values
 		 */
 		static Mat<N> translate(float values[N - 1]) {
 			Mat<N> res = Mat<4>::id();
@@ -182,7 +186,9 @@ namespace Matrix {
 			return res;
 		}
 
-
+		/**
+		 * Return the translation matrix of given values
+		 */
 		static Mat<4> translate(float x, float y, float z) {
 			Mat<N> res = Mat<4>::id();
 			res.data[3][0] = x;
@@ -191,6 +197,9 @@ namespace Matrix {
 			return res;
 		}
 
+		/**
+		 * Return a scale matrix
+		 */
 		static Mat<N> scale(float values[N - 1]) {
 			Mat<N> res = Mat<N>::id();
 			for (int i = 0; i < N - 1; i++)
@@ -198,6 +207,9 @@ namespace Matrix {
 			return res;
 		}
 
+		/**
+		 * Return a matrix with column and line inverted
+		 */
 		Mat<N> transpose() {
 			Mat<N> res = Mat<N>::id();
 
@@ -208,6 +220,9 @@ namespace Matrix {
 			return res;
 		}
 
+		/**
+		 * Return the commatrix
+		 */
 		Mat<N> commatrix() {
 			Mat<N> res = Mat<N>::id();
 			if  constexpr (N > 1) {
@@ -231,6 +246,9 @@ namespace Matrix {
 			return res;
 		}
 
+		/**
+		 * Return the determinant of the matrix
+		 */
 		float det() {
 			if constexpr (N == 1)
 				return data[0][0];
@@ -262,6 +280,9 @@ namespace Matrix {
 
 }
 
+/**
+ * Printing the matrix
+ */
 template<int N>
 std::ostream& operator<<(std::ostream& os, const Matrix::Mat<N>& m) {
 	os << "Matrix<" << N << ">" << std::endl;
